@@ -2,8 +2,8 @@ import Head from 'next/head'
 import TitleBar from "../components/titleBar"
 import MasterDetail from "../components/masterDetail"
 
-var siteTitle = "CONV."
-var windowTitle = "CONV."
+var siteTitle = "Transmister"
+var windowTitle = "Transmister"
 
 export default function Home() {
   return (
