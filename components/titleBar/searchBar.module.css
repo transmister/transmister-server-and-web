@@ -1,0 +1,41 @@
+.searchBar {
+    margin: 8px;
+    outline: none;
+    border: none;
+    background-color: var(--color-blue-theme-2);
+    line-height: 30px;
+    font-size: 12px;
+    padding: 0 8px;
+    border-radius: 4px;
+    color: var(--color-blue-theme-text);
+    width: 256px;
+    max-width: calc(100% - 16px);
+    transition: all 1s;
+}
+
+.searchBar:hover{
+    background-color: var(--color-blue-theme-3);
+    transition: all 1s;
+}
+
+.searchBar:focus{
+    background-color: var(--color-blue-theme-4);
+    box-shadow: 0 0 32px var(--color-blue-theme);
+    transition: all 0.15s;
+}
+
+.searchBar::-webkit-input-placeholder {
+    color: var(--color-blue-theme-text-2);
+}
+
+.searchBar:-moz-placeholder {
+    color: var(--color-blue-theme-text-2);
+}
+
+.searchBar::-moz-placeholder {
+    color: var(--color-blue-theme-text-2);
+}
+
+.searchBar:-ms-input-placeholder {
+    color: var(--color-blue-theme-text-2);
+}

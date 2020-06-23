@@ -1,0 +1,4 @@
+.detail {
+    width: calc(100% - 288px);
+    display: inline-block;
+}
