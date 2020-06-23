@@ -1,6 +1,6 @@
 import styles from "./master.module.css"
 
-var $data = [
+var testData = [
     {
         title: "A",
         description: "UI Test A"
@@ -17,12 +17,7 @@ var $data = [
 
 export default function Master(props) {
     return (
-        <div className={styles.master}>{(function (data) {
-            var tmp = new Array()
-            for (const index in $data) {
-                tmp.push(<h3>{$data.title}</h3>)
-            }
-            return <div>{tmp}</div>
-        })(props.data)}</div>
+        <div>{function () {
+        }}</div>
     )
 }
