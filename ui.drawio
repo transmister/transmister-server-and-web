@@ -1,0 +1,43 @@
+<mxfile host="" modified="2020-06-23T08:47:01.009Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code-Insiders/1.47.0-insider Chrome/78.0.3904.130 Electron/7.3.1 Safari/537.36" etag="TOmyQEuzLmFYno_oKCoI" version="13.1.3">
+    <diagram id="6hGFLwfOUW9BJ-s0fimq" name="main page">
+        <mxGraphModel dx="1393" dy="932" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="2" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=#0083ff;" parent="1" vertex="1">
+                    <mxGeometry width="1280" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="Search" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#4ea9ff;strokeColor=none;align=left;fontColor=#d1e9ff;spacingLeft=8;" parent="1" vertex="1">
+                    <mxGeometry x="5" y="5" width="256" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="5" value="Transmister" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#d1e9ff;fontSize=16;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="270" y="10" width="1000" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="7" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;fontSize=16;fontColor=#d1e9ff;align=left;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry y="40" width="1280" height="680" as="geometry"/>
+                </mxCell>
+                <mxCell id="8" value="" style="ellipse;whiteSpace=wrap;html=1;rounded=0;fillColor=#65b4ff;fontSize=16;fontColor=#ffffff;align=left;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="5" y="45" width="64" height="64" as="geometry"/>
+                </mxCell>
+                <mxCell id="9" value="Transmister" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontColor=#1B1E21;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="85" y="55" width="140" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="10" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d1e9ff;fontSize=16;fontColor=#d1e9ff;align=left;" parent="1" vertex="1">
+                    <mxGeometry y="115" width="270" height="75" as="geometry"/>
+                </mxCell>
+                <mxCell id="11" value="" style="ellipse;whiteSpace=wrap;html=1;rounded=0;fillColor=#65b4ff;fontSize=16;fontColor=#ffffff;align=left;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="5" y="120" width="64" height="64" as="geometry"/>
+                </mxCell>
+                <mxCell id="12" value="MrWillCom" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontColor=#1B1E21;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="85" y="130" width="140" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="13" value="Welcome to Transmister" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontColor=#63707A;" parent="1" vertex="1">
+                    <mxGeometry x="85" y="80" width="177" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="14" value="Welcome to Transmister" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontColor=#63707A;" parent="1" vertex="1">
+                    <mxGeometry x="85" y="155" width="177" height="20" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
