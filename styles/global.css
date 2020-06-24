@@ -8,6 +8,14 @@ body {
     --color-blue-theme-2: #4ea9ff;
     --color-blue-theme-3: #65b4ff;
     --color-blue-theme-4: #85c4ff;
+    --color-blue-theme-5: #afd8ff;
+
     --color-blue-theme-text: #f0f8ff;
     --color-blue-theme-text-2: #d1e9ff;
+
+    --color-background-black-text: #9ea8b1;
+    --color-background-black-text-2: #9ea8b1;
+
+    --hover-transition: all 1s;
+    --active-transition: all 0.15s;
 }
