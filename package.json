@@ -1,11 +1,11 @@
 {
-  "name": "try6",
-  "version": "0.1.0",
+  "name": "transmister",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 80",
     "build": "next build",
-    "start": "next start"
+    "start": "next start -p 80"
   },
   "dependencies": {
     "js-cookie": "^2.2.1",
