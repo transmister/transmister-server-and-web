@@ -2,3 +2,34 @@
     width: 288px;
     display: inline-block;
 }
+
+.listItem {
+    padding: 8px;
+    user-select: none;
+    transition: var(--hover-transition);
+}
+
+.listItem:hover {
+    background-color: var(--color-blue-theme-5);
+    transition: var(--hover-transition);
+}
+
+.listItem:active {
+    background-color: var(--color-blue-theme-4);
+    transition: var(--active-transition);
+}
+
+.listItemTitle {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0;
+    padding: 0 8px;
+}
+
+.listItemDescription {
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--color-background-black-text-2);
+    margin: 0;
+    padding: 0 8px;
+}

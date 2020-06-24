@@ -6,7 +6,7 @@ export default function MasterDetail(props) {
     return (
         <div>
             <Master data={props.master}></Master>
-            <Detail></Detail>
+            <Detail>{props.detail}</Detail>
         </div>
     )
 }
