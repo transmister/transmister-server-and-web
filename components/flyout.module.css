@@ -1,0 +1,9 @@
+.flyout {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--color-background-white);
+    border-radius: var(--border-radius-2);
+    box-shadow: var(--shadow-dreamy);
+}
