@@ -1,7 +1,6 @@
 import Head from 'next/head'
 import TitleBar from "../components/titleBar"
 import MasterDetail from "../components/masterDetail"
-import Time from '../components/time'
 
 var siteTitle = "Transmister"
 var windowTitle = "Transmister"
