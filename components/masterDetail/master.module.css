@@ -10,18 +10,19 @@
 }
 
 .listItem:hover {
-    background-color: var(--color-blue-theme-5);
+    background-color: var(--color-blue-theme-text);
     transition: var(--hover-transition);
 }
 
 .listItem:active {
-    background-color: var(--color-blue-theme-4);
+    background-color: var(--color-blue-theme-text-2);
     transition: var(--active-transition);
 }
 
 .listItemTitle {
     font-size: 20px;
     font-weight: bold;
+    color: var(--color-background-black-text);
     margin: 0;
     padding: 0 8px;
 }

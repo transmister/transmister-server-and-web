@@ -6,19 +6,19 @@
     line-height: 30px;
     font-size: 12px;
     padding: 0 8px;
-    border-radius: 4px;
+    border-radius: var(--border-radius);
     color: var(--color-blue-theme-text);
     width: 256px;
     max-width: calc(100% - 16px);
     transition: var(--hover-transition);
 }
 
-.searchBar:hover{
+.searchBar:hover {
     background-color: var(--color-blue-theme-3);
     transition: var(--hover-transition);
 }
 
-.searchBar:focus{
+.searchBar:focus {
     background-color: var(--color-blue-theme-4);
     box-shadow: 0 0 32px var(--color-blue-theme);
     transition: var(--active-transition);

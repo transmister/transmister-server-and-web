@@ -4,18 +4,36 @@ body {
 }
 
 :root {
+    /* Blue theme colors */
     --color-blue-theme: #0083ff;
     --color-blue-theme-2: #4ea9ff;
     --color-blue-theme-3: #65b4ff;
     --color-blue-theme-4: #85c4ff;
-    --color-blue-theme-5: #afd8ff;
 
     --color-blue-theme-text: #f0f8ff;
     --color-blue-theme-text-2: #d1e9ff;
+    --color-blue-theme-text-3: #acd7ff;
 
-    --color-background-black-text: #9ea8b1;
+    /* Black & white colors */
+    --color-background-white: #ffffff;
+
+    --color-background-black-text: #191e22;
     --color-background-black-text-2: #9ea8b1;
 
+    /* Shadows */
+    /* --shadow-dreamy by https://tobiasahlin.com/blog/layered-smooth-box-shadows/ */
+    --shadow-dreamy: 0 1px 2px rgba(0,0,0,0.07),
+                     0 2px 4px rgba(0,0,0,0.07),
+                     0 4px 8px rgba(0,0,0,0.07),
+                     0 8px 16px rgba(0,0,0,0.07),
+                     0 16px 32px rgba(0,0,0,0.07),
+                     0 32px 64px rgba(0,0,0,0.07);
+
+    /* Border radius */
+    --border-radius: 4px;
+    --border-radius-2: 8px;
+
+    /* Transitions */
     --hover-transition: all 1s;
     --active-transition: all 0.15s;
 }
