@@ -4,7 +4,7 @@ import Detail from "./masterDetail/detail"
 
 export default function MasterDetail(props) {
     return (
-        <div>
+        <div className={styles.masterDetail}>
             <Master data={props.master}></Master>
             <Detail>{props.detail}</Detail>
         </div>

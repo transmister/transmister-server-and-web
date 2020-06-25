@@ -1,3 +1,7 @@
 .titleBar {
     background-color: var(--color-blue-theme);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
 }
