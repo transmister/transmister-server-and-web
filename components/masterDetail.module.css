@@ -1,3 +1,4 @@
 .masterDetail{
     margin-top: 46px;
+    height: calc(100vh - 46px);
 }
