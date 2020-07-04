@@ -29,20 +29,39 @@ app.prepare().then(() => {
 
     var io = require('socket.io')(http)
     io.on('connection', (socket) => {
-        console.log(`connection - ${socket.id}`);
+        console.log(`event - io     - connection - ${socket.id}`);
+
+        function objEdit(obj, attr, value) {
+            if (value && value != "") {
+                obj[attr] = value
+                return obj
+            } else {
+                delete obj[attr]
+                return obj
+            }
+        }
 
         socket.on('connectUsername', (data) => {
-            fs.readFile(db.connections, 'utf8', (err, data) => {
+            if (data) {
+                fs.readFile(db.connections, 'utf8', (err, file) => {
+                    if (err) throw err
+                    var tmp = JSON.parse(file.toString())
+                    tmp = objEdit(tmp, socket.id, data)
+                    fs.writeFile(db.connections, JSON.stringify(tmp), () => { })
+                })
+            } else {
+                // Notify client: invalid username
+            }
+        })
+
+        socket.on('disconnect', (reason) => {
+            console.log(`event - socket - disconnect - ${socket.id}`);
+
+            fs.readFile(db.connections, 'utf8', (err, file) => {
                 if (err) throw err
-                var tmp = JSON.parse(data.toString())
-                if (tmp[data]) {
-                    socket.emit('err', 'username exists')
-                } else {
-                    tmp[data] = socket.id
-                    fs.writeFile(db.users, JSON.stringify(tmp), {
-                        encoding: 'utf8'
-                    })
-                }
+                var tmp = JSON.parse(file.toString())
+                tmp = objEdit(tmp, socket.id)
+                fs.writeFile(db.connections, JSON.stringify(tmp), () => { })
             })
         })
     })
