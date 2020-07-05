@@ -1,6 +1,7 @@
 body {
     margin: 0;
     width: 100%;
+    font-family: "SF Pro Text", "SF Pro Icons", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 }
 
 :root {
