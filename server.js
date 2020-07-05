@@ -27,6 +27,8 @@ app.prepare().then(() => {
         connections: './data/connections.json'
     }
 
+    var dbIO = []
+
     var io = require('socket.io')(http)
     io.on('connection', (socket) => {
         console.log(`event - io     - connection - ${socket.id}`);
@@ -41,16 +43,27 @@ app.prepare().then(() => {
             }
         }
 
-        socket.on('connectUsername', (data) => {
-            if (data) {
-                fs.readFile(db.connections, 'utf8', (err, file) => {
-                    if (err) throw err
-                    var tmp = JSON.parse(file.toString())
-                    tmp = objEdit(tmp, socket.id, data)
-                    fs.writeFile(db.connections, JSON.stringify(tmp), () => { })
-                })
-            } else {
-                // Notify client: invalid username
+        socket.on('e', (data) => {
+            switch (data.event) {
+                case "signIn":
+                    break;
+
+                case "signUp":
+                    dbIO.push({
+                        db: db.users,
+                        attr: data.data.username,
+                        value: {
+                            password: data.data.password
+                        }
+                    })
+                    break;
+
+                default:
+                    socket.emit('c', {
+                        event: "error",
+                        desc: "Invalid event name"
+                    })
+                    break;
             }
         })
 
