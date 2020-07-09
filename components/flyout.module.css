@@ -6,4 +6,54 @@
     background-color: var(--color-background-white);
     border-radius: var(--border-radius-2);
     box-shadow: var(--shadow-dreamy);
+    width: 550px;
+    max-width: calc(100% - 16px);
+    transition: var(--show-hide-transition);
+}
+
+.closedFlyout {
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, calc(-50% + 32px));
+}
+
+.title {
+    padding: 8px;
+}
+
+.titleLeading {
+    margin: 8px;
+    display: inline-block;
+}
+
+.titleTitle {
+    font-size: 16px;
+    line-height: 16px;
+    font-weight: bold;
+    margin: 0;
+    padding: 8px;
+    display: inline-block;
+}
+
+.titleCloseBtn {
+    display: inline-block;
+    float: right;
+    padding: 8px;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    font-size: 24px;
+    line-height: 16px;
+    border-radius: 32px;
+    transition: var(--hover-transition);
+}
+
+.titleCloseBtn:hover {
+    background-color: var(--color-blue-theme-text-2);
+    transition: var(--hover-transition);
+}
+
+.titleCloseBtn:active {
+    background-color: var(--color-blue-theme-text-3);
+    transition: var(--active-transition);
 }
