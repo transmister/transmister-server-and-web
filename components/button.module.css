@@ -1,0 +1,21 @@
+.button {
+    outline: none;
+    border: none;
+    border-radius: var(--border-radius);
+    background-color: var(--color-blue-theme-text);
+    color: var(--color-blue-theme);
+    display: inline-block;
+    padding: 4px 8px;
+    cursor: pointer;
+    transition: var(--hover-transition);
+}
+
+.button:hover {
+    background-color: var(--color-blue-theme-text-2);
+    transition: var(--hover-transition);
+}
+
+.button:active {
+    background-color: var(--color-blue-theme-text-3);
+    transition: var(--active-transition);
+}
