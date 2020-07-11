@@ -14,4 +14,12 @@ function FlyoutTitle({ leading, title, showCloseButton, closeFlyout }) {
     </div>
 }
 
-export { Flyout, FlyoutTitle }
+function FlyoutContent({ children }) {
+    return <div className={styles.flyoutContent}>{children}</div>
+}
+
+function FlyoutFooter({ align, children }) {
+    return <div className={styles.flyoutFooter} style={{textAlign: align}}>{children}</div>
+}
+
+export { Flyout, FlyoutTitle, FlyoutContent, FlyoutFooter }

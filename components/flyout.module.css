@@ -8,13 +8,6 @@
     box-shadow: var(--shadow-dreamy);
     width: 550px;
     max-width: calc(100% - 16px);
-    transition: var(--show-hide-transition);
-}
-
-.closedFlyout {
-    opacity: 0;
-    pointer-events: none;
-    transform: translate(-50%, calc(-50% + 32px));
 }
 
 .title {
@@ -48,7 +41,7 @@
     transition: var(--hover-transition);
 }
 
-.titleCloseBtn:hover {
+.titleCloseBtn:hover, .titleCloseBtn:focus {
     background-color: var(--color-blue-theme-text-2);
     transition: var(--hover-transition);
 }
@@ -56,4 +49,12 @@
 .titleCloseBtn:active {
     background-color: var(--color-blue-theme-text-3);
     transition: var(--active-transition);
+}
+
+.flyoutContent {
+    padding: 16px;
+}
+
+.flyoutFooter {
+    padding: 16px;
 }
