@@ -2,33 +2,23 @@ import Head from 'next/head'
 import TitleBar from '../components/titleBar'
 import MasterDetail from '../components/masterDetail'
 import ChatView from '../components/chatView'
-import SignInOrUp from '../components/signInOrUp'
-import { useState } from 'react'
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core'
+import { Flyout, FlyoutTitle, FlyoutContent, FlyoutFooter } from '../components/flyout'
+import SignInOrSignUp from '../components/signInOrSignUp'
+import Button from '../components/button'
+import globalVariables from '../global/global'
 import socket from '../socket/socket'
 
-var siteTitle = 'Transmister'
-var windowTitle = 'Transmister'
-
 export default function Home() {
-  var inputVal
 
-  const [open, setOpen] = React.useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const [flyoutOpen, setFlyoutOpen] = React.useState(false)
+  const [flyoutContent, setFlyoutContent] = React.useState(<></>)
 
   return (
     <>
       <Head>
-        <title>{siteTitle}</title>
+        <title>{globalVariables.siteName}</title>
       </Head>
-      <TitleBar title={windowTitle}></TitleBar>
+      <TitleBar title={globalVariables.appName} setFlyoutContent={setFlyoutContent} setFlyoutOpen={setFlyoutOpen}></TitleBar>
       <MasterDetail
         master={[
           {
@@ -47,27 +37,24 @@ export default function Home() {
         detail={
           <>
             <ChatView />
-            <input value={inputVal} onChange={(e) => {
-              inputVal = e.target.value
-            }} />
-            <button onClick={function () {
-              if (inputVal) {
-                socket.emit('connectUsername', inputVal)
-              } else {
-                alert("invalid username")
-              }
-            }}>Send msg to server</button>
-            <Button onClick={handleClickOpen}>Open alert dialog</Button>
-            <Dialog
-              open={open}
-              onClose={handleClose}
-              aria-labelledby="alert-dialog-title"
-              aria-describedby="alert-dialog-description"
-            >
-              <DialogTitle id="alert-dialog-title">{"Sign In or Sign Up to Transmister"}</DialogTitle>
-              <SignInOrUp handleClose={handleClose} />
-            </Dialog>
+            <Button onClick={() => {
+              setFlyoutOpen(!flyoutOpen)
+              setFlyoutContent(<>
+                <FlyoutTitle title={`Sign in or sign up to ${globalVariables.prodName}`} showCloseButton={true} closeFlyout={setFlyoutOpen} />
+                <FlyoutContent>
+                  <SignInOrSignUp />
+                </FlyoutContent>
+                <FlyoutFooter align='right'>
+                  <Button onClick={() => {
+                    setFlyoutOpen(false)
+                  }}>Cancel</Button>
+                </FlyoutFooter>
+              </>)
+            }}>Switch Flyout</Button>
           </>} />
+      <Flyout open={flyoutOpen}>
+        {flyoutContent}
+      </Flyout>
     </>
   )
 }
