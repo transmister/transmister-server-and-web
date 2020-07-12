@@ -35,34 +35,5 @@ const globalStyleVariables = {
     }
 }
 
-import { createTheme } from '@fluentui/react'
-
-const globalFluentUiStyleVariables = createTheme({
-    palette: {
-        themePrimary: '#0083ff',
-        themeLighterAlt: '#00050a',
-        themeLighter: '#001529',
-        themeLight: '#00284d',
-        themeTertiary: '#004f99',
-        themeSecondary: '#0074e0',
-        themeDarkAlt: '#1990ff',
-        themeDark: '#3da1ff',
-        themeDarker: '#70baff',
-        neutralLighterAlt: '#ffffff',
-        neutralLighter: '#ffffff',
-        neutralLight: '#ffffff',
-        neutralQuaternaryAlt: '#ffffff',
-        neutralQuaternary: '#ffffff',
-        neutralTertiaryAlt: '#ffffff',
-        neutralTertiary: '#080a0b',
-        neutralSecondary: '#0b0d0f',
-        neutralPrimaryAlt: '#0e1013',
-        neutralPrimary: '#191e22',
-        neutralDark: '#13171a',
-        black: '#161a1e',
-        white: '#ffffff',
-    }
-});
-
 export default globalVariables
-export { globalVariables, globalStyleVariables, globalFluentUiStyleVariables }
+export { globalVariables, globalStyleVariables }
