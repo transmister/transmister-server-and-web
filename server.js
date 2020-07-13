@@ -22,26 +22,30 @@ app.prepare().then(() => {
         }
     })
 
+    // var db = {
+    //     users: './data/users.json',
+    //     connections: './data/connections.json'
+    // }
+
     var db = {
-        users: './data/users.json',
-        connections: './data/connections.json'
+        users: {},
+        connections: {}
     }
 
-    var dbIO = []
-
+    const NodeRSA = require('node-rsa')
     var io = require('socket.io')(http)
     io.on('connection', (socket) => {
-        console.log(`event - io     - connection - ${socket.id}`);
+        console.log(`event - io     - connection - ${socket.id}`)
 
-        function objEdit(obj, attr, value) {
-            if (value && value != "") {
-                obj[attr] = value
-                return obj
-            } else {
-                delete obj[attr]
-                return obj
-            }
-        }
+        socket.on('b', (data) => {
+            db.connections[socket.id].key.client.public = data
+            const key = new NodeRSA({ b: 1024 })
+            db.connections[socket.id].key.server.public = key.exportKey('pkcs1-public-pem')
+            db.connections[socket.id].key.server.private = key.exportKey('pkcs1-private-pem')
+            socket.emit('b', key.exportKey('pkcs1-public-pem'))
+
+            console.log(db.connections[socket.id])
+        })
 
         socket.on('e', (data) => {
             switch (data.event) {
@@ -49,13 +53,6 @@ app.prepare().then(() => {
                     break;
 
                 case "signUp":
-                    dbIO.push({
-                        db: db.users,
-                        attr: data.data.username,
-                        value: {
-                            password: data.data.password
-                        }
-                    })
                     break;
 
                 default:
@@ -68,14 +65,7 @@ app.prepare().then(() => {
         })
 
         socket.on('disconnect', (reason) => {
-            console.log(`event - socket - disconnect - ${socket.id}`);
-
-            fs.readFile(db.connections, 'utf8', (err, file) => {
-                if (err) throw err
-                var tmp = JSON.parse(file.toString())
-                tmp = objEdit(tmp, socket.id)
-                fs.writeFile(db.connections, JSON.stringify(tmp), () => { })
-            })
+            console.log(`event - socket - disconnect - ${socket.id}`)
         })
     })
 

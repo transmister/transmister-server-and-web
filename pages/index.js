@@ -7,6 +7,7 @@ import SignInOrSignUp from '../components/signInOrSignUp'
 import Button from '../components/button'
 import globalVariables from '../global/global'
 import socket from '../socket/socket'
+import keyPair from '../encryption/client'
 
 export default function Home() {
 
@@ -51,6 +52,9 @@ export default function Home() {
                 </FlyoutFooter>
               </>)
             }}>Switch Flyout</Button>
+            <Button onClick={() => {
+              console.log(keyPair)
+            }}>test</Button>
           </>} />
       <Flyout open={flyoutOpen}>
         {flyoutContent}
