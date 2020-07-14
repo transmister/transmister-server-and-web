@@ -33,39 +33,66 @@ app.prepare().then(() => {
     }
 
     const NodeRSA = require('node-rsa')
+
     var io = require('socket.io')(http)
     io.on('connection', (socket) => {
         console.log(`event - io     - connection - ${socket.id}`)
 
-        socket.on('b', (data) => {
-            db.connections[socket.id].key.client.public = data
-            const key = new NodeRSA({ b: 1024 })
-            db.connections[socket.id].key.server.public = key.exportKey('pkcs1-public-pem')
-            db.connections[socket.id].key.server.private = key.exportKey('pkcs1-private-pem')
-            socket.emit('b', key.exportKey('pkcs1-public-pem'))
-
-            console.log(db.connections[socket.id])
-        })
-
-        socket.on('e', (data) => {
-            switch (data.event) {
-                case "signIn":
-                    break;
-
-                case "signUp":
-                    break;
-
-                default:
-                    socket.emit('c', {
-                        event: "error",
-                        desc: "Invalid event name"
-                    })
-                    break;
+        const encryptedSocket = {
+            emit: (event, data, publicKey) => {
+                const key = new NodeRSA()
+                key.importKey(publicKey, 'pkcs1-public-pem')
+                socket.emit(event, key.encrypt(data))
+            },
+            on: (event, listener, privateKey) => {
+                socket.on(event, (data) => {
+                    const key = new NodeRSA()
+                    key.importKey(privateKey, 'pkcs1-private-pem')
+                    listener(key.decrypt(data))
+                })
             }
+        }
+
+        socket.on('b', (data) => {
+            console.log(`event - socket - b          - ${socket.id} - receive - client public key`)
+
+            const key = new NodeRSA({ b: 1024 })
+            db.connections[socket.id] = {
+                key: {
+                    client: {
+                        public: data
+                    },
+                    server: {
+                        public: key.exportKey('pkcs1-public-pem'),
+                        private: key.exportKey('pkcs1-private-pem')
+                    }
+                }
+            }
+
+            socket.emit('b', key.exportKey('pkcs1-public-pem'))
+            console.log(`event - socket - b          - ${socket.id} - send    - server public key`)
+
+            fs.writeFile('./data/.tmp', JSON.stringify(db.connections), () => { })
+
+            delete key
+
+            encryptedSocket.on('e', (data) => {
+                switch (data['event']) {
+                    case 'test':
+                        console.log(`${socket.id} tested successful!!! - ${data}`)
+                        break;
+
+                    default:
+                        break;
+                }
+            }, db.connections[socket.id].key.client.public)
         })
 
         socket.on('disconnect', (reason) => {
             console.log(`event - socket - disconnect - ${socket.id}`)
+
+            delete db.connections[socket.id]
+            fs.writeFile('./data/.tmp', JSON.stringify(db.connections), () => { })
         })
     })
 
