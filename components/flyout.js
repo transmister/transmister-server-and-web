@@ -22,4 +22,5 @@ function FlyoutFooter({ align, children }) {
     return <div className={styles.flyoutFooter} style={{textAlign: align}}>{children}</div>
 }
 
+export default Flyout
 export { Flyout, FlyoutTitle, FlyoutContent, FlyoutFooter }

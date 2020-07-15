@@ -2,12 +2,8 @@ import Head from 'next/head'
 import TitleBar from '../components/titleBar'
 import MasterDetail from '../components/masterDetail'
 import ChatView from '../components/chatView'
-import { Flyout, FlyoutTitle, FlyoutContent, FlyoutFooter } from '../components/flyout'
-import SignInOrSignUp from '../components/signInOrSignUp'
-import Button from '../components/button'
+import Flyout from '../components/flyout'
 import globalVariables from '../global/global'
-import socket from '../socket/socket'
-import keyPair from '../encryption/client'
 
 export default function Home() {
 
