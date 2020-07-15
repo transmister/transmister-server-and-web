@@ -36,25 +36,21 @@ app.prepare().then(() => {
 
     var io = require('socket.io')(http)
     io.on('connection', (socket) => {
-        console.log(`event - io     - connection - ${socket.id}`)
+        console.log(`event - io              - connection - ${socket.id}`)
 
         const encryptedSocket = {
             emit: (event, data, publicKey) => {
-                const key = new NodeRSA()
-                key.importKey(publicKey, 'pkcs1-public-pem')
-                socket.emit(event, key.encrypt(data))
+                socket.emit(event, new NodeRSA().importKey(publicKey, 'pkcs1-public-pem').encrypt(data, 'base64'))
             },
             on: (event, listener, privateKey) => {
                 socket.on(event, (data) => {
-                    const key = new NodeRSA()
-                    key.importKey(privateKey, 'pkcs1-private-pem')
-                    listener(key.decrypt(data))
+                    listener(new NodeRSA().importKey(privateKey, 'pkcs1-private-pem').decrypt(data, 'utf8'))
                 })
             }
         }
 
         socket.on('b', (data) => {
-            console.log(`event - socket - b          - ${socket.id} - receive - client public key`)
+            console.log(`event - socket          - b          - ${socket.id} - receive - client public key`)
 
             const key = new NodeRSA({ b: 1024 })
             db.connections[socket.id] = {
@@ -70,26 +66,28 @@ app.prepare().then(() => {
             }
 
             socket.emit('b', key.exportKey('pkcs1-public-pem'))
-            console.log(`event - socket - b          - ${socket.id} - send    - server public key`)
+            console.log(`event - socket          - b          - ${socket.id} - send    - server public key`)
 
             fs.writeFile('./data/.tmp', JSON.stringify(db.connections), () => { })
 
             delete key
 
             encryptedSocket.on('e', (data) => {
+                data = JSON.parse(data)
+
                 switch (data['event']) {
                     case 'test':
-                        console.log(`${socket.id} tested successful!!! - ${data}`)
+                        console.log(`event - encryptedSocket - e          - ${socket.id} - test    - receive test message > content: ${data.testMsg}`)
                         break;
 
                     default:
                         break;
                 }
-            }, db.connections[socket.id].key.client.public)
+            }, db.connections[socket.id].key.server.private)
         })
 
         socket.on('disconnect', (reason) => {
-            console.log(`event - socket - disconnect - ${socket.id}`)
+            console.log(`event - socket          - disconnect - ${socket.id}`)
 
             delete db.connections[socket.id]
             fs.writeFile('./data/.tmp', JSON.stringify(db.connections), () => { })

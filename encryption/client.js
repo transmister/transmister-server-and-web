@@ -18,15 +18,16 @@ var keyPair = {
 socket.on('b', (data) => {
     keyPair.server.public = data
 
-    const key = new NodeRSA()
-    key.importKey(keyPair.server.public, 'pkcs1-public-pem')
-    socket.emit('e', key.encrypt('hello!!!'))
+    socket.emit('e', new NodeRSA().importKey(keyPair.server.public, 'pkcs1-public-pem').encrypt(JSON.stringify({
+        event: 'test',
+        testMsg: `${socket.id} is testing`
+    }), 'base64'))
 
     socket.on('e', (data) => {
-        const key = new NodeRSA()
-        key.importKey(keyPair.client.private, 'pkcs1-private-pem')
-        data = key.decrypt(data)
-        console.log(data)
+        data = new NodeRSA().importKey(keyPair.client.private, 'pkcs1-private-pem').decrypt(data, 'utf8')
+        data = JSON.parse(data)
+
+        console.log(`received message: ${data}`)
     })
 })
 

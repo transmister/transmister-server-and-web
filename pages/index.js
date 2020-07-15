@@ -38,23 +38,6 @@ export default function Home() {
         detail={
           <>
             <ChatView />
-            <Button onClick={() => {
-              setFlyoutOpen(!flyoutOpen)
-              setFlyoutContent(<>
-                <FlyoutTitle title={`Sign in or sign up to ${globalVariables.prodName}`} showCloseButton={true} closeFlyout={setFlyoutOpen} />
-                <FlyoutContent>
-                  <SignInOrSignUp />
-                </FlyoutContent>
-                <FlyoutFooter align='right'>
-                  <Button onClick={() => {
-                    setFlyoutOpen(false)
-                  }}>Cancel</Button>
-                </FlyoutFooter>
-              </>)
-            }}>Switch Flyout</Button>
-            <Button onClick={() => {
-              console.log(keyPair)
-            }}>test</Button>
           </>} />
       <Flyout open={flyoutOpen}>
         {flyoutContent}
