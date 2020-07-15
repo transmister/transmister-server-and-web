@@ -22,60 +22,75 @@ app.prepare().then(() => {
         }
     })
 
+    // var db = {
+    //     users: './data/users.json',
+    //     connections: './data/connections.json'
+    // }
+
     var db = {
-        users: './data/users.json',
-        connections: './data/connections.json'
+        users: {},
+        connections: {}
     }
 
-    var dbIO = []
+    const NodeRSA = require('node-rsa')
 
     var io = require('socket.io')(http)
     io.on('connection', (socket) => {
-        console.log(`event - io     - connection - ${socket.id}`);
+        console.log(`event - io              - connection - ${socket.id}`)
 
-        function objEdit(obj, attr, value) {
-            if (value && value != "") {
-                obj[attr] = value
-                return obj
-            } else {
-                delete obj[attr]
-                return obj
+        const encryptedSocket = {
+            emit: (event, data, publicKey) => {
+                socket.emit(event, new NodeRSA().importKey(publicKey, 'pkcs1-public-pem').encrypt(data, 'base64'))
+            },
+            on: (event, listener, privateKey) => {
+                socket.on(event, (data) => {
+                    listener(new NodeRSA().importKey(privateKey, 'pkcs1-private-pem').decrypt(data, 'utf8'))
+                })
             }
         }
 
-        socket.on('e', (data) => {
-            switch (data.event) {
-                case "signIn":
-                    break;
+        socket.on('b', (data) => {
+            console.log(`event - socket          - b          - ${socket.id} - receive - client public key`)
 
-                case "signUp":
-                    dbIO.push({
-                        db: db.users,
-                        attr: data.data.username,
-                        value: {
-                            password: data.data.password
-                        }
-                    })
-                    break;
-
-                default:
-                    socket.emit('c', {
-                        event: "error",
-                        desc: "Invalid event name"
-                    })
-                    break;
+            const key = new NodeRSA({ b: 1024 })
+            db.connections[socket.id] = {
+                key: {
+                    client: {
+                        public: data
+                    },
+                    server: {
+                        public: key.exportKey('pkcs1-public-pem'),
+                        private: key.exportKey('pkcs1-private-pem')
+                    }
+                }
             }
+
+            socket.emit('b', key.exportKey('pkcs1-public-pem'))
+            console.log(`event - socket          - b          - ${socket.id} - send    - server public key`)
+
+            fs.writeFile('./data/.tmp', JSON.stringify(db.connections), () => { })
+
+            delete key
+
+            encryptedSocket.on('e', (data) => {
+                data = JSON.parse(data)
+
+                switch (data['event']) {
+                    case 'test':
+                        console.log(`event - encryptedSocket - e          - ${socket.id} - test    - receive test message > content: ${data.testMsg}`)
+                        break;
+
+                    default:
+                        break;
+                }
+            }, db.connections[socket.id].key.server.private)
         })
 
         socket.on('disconnect', (reason) => {
-            console.log(`event - socket - disconnect - ${socket.id}`);
+            console.log(`event - socket          - disconnect - ${socket.id}`)
 
-            fs.readFile(db.connections, 'utf8', (err, file) => {
-                if (err) throw err
-                var tmp = JSON.parse(file.toString())
-                tmp = objEdit(tmp, socket.id)
-                fs.writeFile(db.connections, JSON.stringify(tmp), () => { })
-            })
+            delete db.connections[socket.id]
+            fs.writeFile('./data/.tmp', JSON.stringify(db.connections), () => { })
         })
     })
 

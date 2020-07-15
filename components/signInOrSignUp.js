@@ -1,6 +1,7 @@
 import { TabView, Tabs, Tab, TabPanel } from '../components/tabView'
 import TextField from './textField'
 import Button from './button'
+import signInOrUp from '../socket/actions/signInOrUp'
 
 var data = {
     signUp: {
@@ -13,7 +14,7 @@ var data = {
     }
 }
 
-function SignInOrSignUp() {
+function SignInOrSignUp({ setFlyoutOpen }) {
     const [currentTabIndex, setCurrentTabIndex] = React.useState(0)
 
     return <TabView tabBar={<Tabs>
@@ -29,7 +30,9 @@ function SignInOrSignUp() {
                 data.signUp.password = e.target.value
             }} />
             <div style={{ textAlign: 'right' }}>
-                <Button>Sign Up</Button>
+                <Button onClick={() => {
+                    signInOrUp('signUp', data.signUp.username, data.signUp.password, () => { setFlyoutOpen(false) })
+                }}>Sign Up</Button>
             </div>
         </TabPanel>
         <TabPanel index={1} currentIndex={currentTabIndex}>
@@ -40,7 +43,9 @@ function SignInOrSignUp() {
                 data.signIn.password = e.target.value
             }} />
             <div style={{ textAlign: 'right' }}>
-                <Button>Sign In</Button>
+                <Button onClick={() => {
+                    signInOrUp('signIn', data.signIn.username, data.signIn.password, () => { setFlyoutOpen(false) })
+                }}>Sign In</Button>
             </div>
         </TabPanel>
     </>} />

@@ -10,7 +10,7 @@ function Avatar({ signedIn, setFlyoutContent, setFlyoutOpen }) {
             setFlyoutContent(<>
                 <FlyoutTitle title={`Sign in or sign up to ${globalVariables.prodName}`} showCloseButton={true} closeFlyout={setFlyoutOpen} />
                 <FlyoutContent>
-                    <SignInOrSignUp />
+                    <SignInOrSignUp setFlyoutOpen={setFlyoutOpen} />
                 </FlyoutContent>
                 <FlyoutFooter align='right'>
                     <Button onClick={() => {
