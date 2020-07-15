@@ -19,6 +19,6 @@
     "socket.io-client": "^2.3.0"
   },
   "devDependencies": {
-    "mongodb": "^3.5.9"
+    "mongoose": "^5.9.24"
   }
 }
