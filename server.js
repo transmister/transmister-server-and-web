@@ -40,9 +40,9 @@ app.prepare().then(() => {
     // }
 
     io.on('connection', (socket) => {
-        
+
         const socketId = socket.id;
-        
+
         console.log(`event - io              - connection - ${socketId}`)
 
         const encryptedSocket = {
@@ -54,7 +54,7 @@ app.prepare().then(() => {
             //         listener(new NodeRSA().importKey(privateKey, 'pkcs1-private-pem').decrypt(data, 'utf8'))
             //     })
             // }
-            
+
             on: (event, listener, socketId) => {
                 socket.on(event, (data) => {
                     let cItem = Connections.findBySocketId(socketId);
@@ -79,8 +79,8 @@ app.prepare().then(() => {
                 // }
             // }
 
-            Connections.save({   
-                socketId: socketId,             
+            Connections.save({
+                socketId: socketId,
                 key: {
                     client: {
                         public: data

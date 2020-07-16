@@ -1,6 +1,7 @@
 /**
- * 连接 MongoDB
- * 参考 https://github.com/transmister/work-share/blob/master/transmister-server-and-web/mongodb.md
+ * ### Connect to MongoDB
+ * #### References
+ * - [transmister/work-share:master/transmister-server-and-web/mongodb.md](https://github.com/transmister/work-share/blob/master/transmister-server-and-web/mongodb.md)
  */
 
 const mongoose = require('mongoose');
@@ -9,10 +10,10 @@ const URI = 'mongodb://localhost:27017/transmister';
 mongoose.Promise = global.Promise;
 mongoose.set('useCreateIndex', true);
 
-const mongoClient = mongoose.createConnection(URI,{ 
-    useNewUrlParser: true, 
-    useUnifiedTopology: true, 
-    poolSize: 5, 
+const mongoClient = mongoose.createConnection(URI,{
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    poolSize: 5,
     keepAlive: 120,
 })
 

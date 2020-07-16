@@ -2,22 +2,22 @@ const mongoose  = require('mongoose')
 
 
 /**
- * 默认支持以下方法
- * Model.deleteMany()
- * Model.deleteOne()
- * Model.find()
- * Model.findById()
- * Model.findByIdAndDelete()
- * Model.findByIdAndRemove()
- * Model.findByIdAndUpdate()
- * Model.findOne()
- * Model.findOneAndDelete()
- * Model.findOneAndRemove()
- * Model.findOneAndReplace()
- * Model.findOneAndUpdate()
- * Model.replaceOne()
- * Model.updateMany()
- * Model.updateOne()
+ * ### Supported methods
+ * - `Model.deleteMany()`
+ * - `Model.deleteOne()`
+ * - `Model.find()`
+ * - `Model.findById()`
+ * - `Model.findByIdAndDelete()`
+ * - `Model.findByIdAndRemove()`
+ * - `Model.findByIdAndUpdate()`
+ * - `Model.findOne()`
+ * - `Model.findOneAndDelete()`
+ * - `Model.findOneAndRemove()`
+ * - `Model.findOneAndReplace()`
+ * - `Model.findOneAndUpdate()`
+ * - `Model.replaceOne()`
+ * - `Model.updateMany()`
+ * - `Model.updateOne()`
  */
 const connectionsSchame = new mongoose.Schema({
     socketId:{
@@ -65,9 +65,6 @@ connectionsSchame.pre('save', function(next) {
     }
 });
 
-const Connections = mongoose.model('Connections', connectionsSchame)    
+const Connections = mongoose.model('Connections', connectionsSchame)
 
 module.exports = Connections
-
-
-
