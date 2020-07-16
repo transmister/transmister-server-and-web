@@ -19,7 +19,7 @@ const mongoose  = require('mongoose')
  * - `Model.updateMany()`
  * - `Model.updateOne()`
  */
-const connectionsSchame = new mongoose.Schema({
+const linkersSchame = new mongoose.Schema({
     socketId:{
         type: String ,
         required: true,
@@ -49,22 +49,6 @@ const connectionsSchame = new mongoose.Schema({
 }, {
     timestamps: true
 });
+const Linkers = mongoose.model('Linkers', linkersSchame)
 
-connectionsSchame.statics.findBySocketId = async (socketId) => {
-
-    const row = await connectionsSchame.findOne({ socketId })
-
-    if(!row) throw new Error('unable to find socketId')
-
-    return row
-}
-
-connectionsSchame.pre('save', function(next) {
-    if(!await connectionsSchame.findOneAndUpdate({ socketId: this.socketId }, this)){
-        next();
-    }
-});
-
-const Connections = mongoose.model('Connections', connectionsSchame)
-
-module.exports = Connections
+module.exports = Linkers
