@@ -5,7 +5,7 @@
   "scripts": {
     "init": "node init.js",
     "dev": "node server.js",
-    "build": "next build",
+    "build": "npx next build",
     "start": "NODE_ENV=production node server.js"
   },
   "dependencies": {
@@ -16,9 +16,7 @@
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "socket.io": "^2.3.0",
-    "socket.io-client": "^2.3.0"
-  },
-  "devDependencies": {
+    "socket.io-client": "^2.3.0",
     "mongoose": "^5.9.24"
-  }
+  },
 }
