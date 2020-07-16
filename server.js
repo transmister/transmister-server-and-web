@@ -131,6 +131,7 @@ mongoose.connect('mongodb://localhost:27017/transmister',{
                 // delete db.connections[socket.id]
                 // fs.writeFile('./data/.tmp', JSON.stringify(db.connections), () => { })
     
+                // 用户断开时删掉
                 Linkers.findOneAndDelete({socketId}).then(ret=>{
                     console.log("socket.on('disconnect') then",socketId)
                 }).catch(ex=>{
