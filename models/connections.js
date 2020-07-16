@@ -60,8 +60,9 @@ connectionsSchame.statics.findBySocketId = async (socketId) => {
 }
 
 connectionsSchame.pre('save', function(next) {
-    console.log(this)
-    next();
+    if(!await connectionsSchame.findOneAndUpdate({ socketId: this.socketId }, this)){
+        next();
+    }
 });
 
 const Connections = mongoose.model('Connections', connectionsSchame)    
