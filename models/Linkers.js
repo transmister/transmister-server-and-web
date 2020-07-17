@@ -1,6 +1,5 @@
 const mongoose  = require('mongoose')
 
-
 /**
  * ### Supported methods
  * - `Model.deleteMany()`
@@ -49,6 +48,6 @@ const linkersSchame = new mongoose.Schema({
 }, {
     timestamps: true
 });
-const Linkers = mongoose.model('Linkers', linkersSchame)
+const linkers = mongoose.model('Linkers', linkersSchame)
 
-module.exports = Linkers
+module.exports = linkers
