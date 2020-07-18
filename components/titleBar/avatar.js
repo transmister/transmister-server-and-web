@@ -19,7 +19,7 @@ function Avatar({ signedIn, setFlyoutContent, setFlyoutOpen }) {
                 </FlyoutFooter>
             </>)
             setFlyoutOpen(true)
-        }}>Sign In</Button>
+        }}>Sign Up</Button>
     )
 }
 

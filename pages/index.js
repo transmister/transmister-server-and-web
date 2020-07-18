@@ -5,11 +5,7 @@ import ChatView from '../components/chatView'
 import Flyout from '../components/flyout'
 import globalVariables from '../global/global'
 
-import initializeEncryptionToServer from '../encryption/client'
-
 export default function Home() {
-
-  initializeEncryptionToServer()
 
   const [flyoutOpen, setFlyoutOpen] = React.useState(false)
   const [flyoutContent, setFlyoutContent] = React.useState(<></>)

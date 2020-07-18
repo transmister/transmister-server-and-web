@@ -1,5 +1,10 @@
 import socket from '../socket/socket'
 
+var encryptedSocket = {
+    emit: undefined,
+    on: undefined
+}
+
 function initializeEncryptionToServer() {
     const NodeRSA = require('node-rsa')
     const key = new NodeRSA({ b: 1024 })
@@ -19,19 +24,44 @@ function initializeEncryptionToServer() {
     socket.on('b', (data) => {
         keyPair.server.public = data
 
-        socket.emit('e', new NodeRSA().importKey(keyPair.server.public, 'pkcs1-public-pem').encrypt(JSON.stringify({
+        encryptedSocket = {
+            emit: (event, data) => {
+                socket.emit(event, new NodeRSA()
+                    .importKey(keyPair.server.public, 'pkcs1-public-pem')
+                    .encrypt(JSON.stringify(data), 'base64')
+                )
+            },
+            on: (event, listener) => {
+                socket.on(event, (data) => {
+                    listener(
+                        JSON.parse(
+                            new NodeRSA()
+                                .importKey(keyPair.client.private, 'pkcs1-private-pem')
+                                .decrypt(data, 'utf8')
+                        )
+                    )
+                })
+            },
+        }
+
+        encryptedSocket.emit('e', {
             event: 'test',
             testMsg: `${socket.id} is testing, time: ${new Date().getFullYear()}-${(new Date().getMonth() + 1)}-${new Date().getDate()} - ${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`
-        }), 'base64'))
+        })
 
-        socket.on('e', (data) => {
-            data = new NodeRSA().importKey(keyPair.client.private, 'pkcs1-private-pem').decrypt(data, 'utf8')
-            data = JSON.parse(data)
+        encryptedSocket.on('e', (data) => {
+            switch (data['event']) {
+                case 'test':
 
-            console.log(`received message: ${data}`)
+                    break;
+
+                default:
+                    break;
+            }
         })
     })
 }
 
 
-export default initializeEncryptionToServer
+export default encryptedSocket
+export { encryptedSocket, initializeEncryptionToServer }

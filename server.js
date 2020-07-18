@@ -10,10 +10,10 @@ const handle = app.getRequestHandler()
 
 // db
 const mongoose = require('mongoose')
-const linkers = require('./models/linkers')
+const db = require('./models/db')
 
 // log
-// const keepLog = require('./log')
+const keepLog = require('./log')
 
 mongoose.connect('mongodb://localhost:27017/transmister', {
     useNewUrlParser: true,
@@ -21,7 +21,7 @@ mongoose.connect('mongodb://localhost:27017/transmister', {
     poolSize: 5,
     keepAlive: true,
 }).then(() => {
-    console.log(`event - db              - connection - success`)
+    keepLog('event', 'db', 'connection', 'success')
     app.prepare().then(() => {
         var http = createServer((req, res) => {
             const parsedUrl = parse(req.url, true)
@@ -39,48 +39,50 @@ mongoose.connect('mongodb://localhost:27017/transmister', {
         const io = require('socket.io')(http)
 
         io.on('connection', (socket) => {
-            console.log(`event - io              - connection - ${socket.id}`)
+            keepLog('event', 'io', 'connection', socket.id)
 
             const encryptedSocket = {
                 emit: (event, data, publicKey) => {
-                    socket.emit(event, new NodeRSA().importKey(publicKey, 'pkcs1-public-pem').encrypt(data, 'base64'))
+                    socket.emit(event, new NodeRSA().importKey(publicKey, 'pkcs1-public-pem').encrypt(JSON.stringify(data), 'base64'))
                 },
                 on: (event, listener) => {
                     socket.on(event, (data) => {
-                        linkers.findOne({ socketId: socket.id }).then(row => {
+                        db.connections.findOne({ socketId: socket.id }).then(row => {
                             if (row) {
-                                listener(new NodeRSA().importKey(row.key.server.private, 'pkcs1-private-pem').decrypt(data, 'utf8'))
+                                listener(JSON.parse(new NodeRSA().importKey(row.data.key.server.private, 'pkcs1-private-pem').decrypt(data, 'utf8')))
                             }
                         }).catch((ex) => {
-                            console.log(ex)
+                            keepLog('error', 'encryptedSocket', 'failed', ex)
                         })
                     })
                 }
             }
 
             socket.on('b', (data) => {
-                console.log(`event - socket          - b          - ${socket.id} - receive - client public key`)
+                keepLog('event', 'socket', 'b', `${socket.id} - receive - client public key`)
 
                 const key = new NodeRSA({ b: 1024 })
 
-                linkers.findOne({ socketId: socket.id }).then((ret) => {
+                db.connections.findOne({ socketId: socket.id }).then((ret) => {
                     if (ret) {
-                        linkers.findOneAndDelete({ socketId: socket.id }).then((ret) => {
-                            console.log(`event - socket          - b          - ${socket.id} - save     - client public key`)
+                        db.connections.findOneAndDelete({ socketId: socket.id }).then((ret) => {
+                            keepLog('event', 'socket', 'b', `${socket.id} - save     - client public key`)
                         }).catch((ex) => {
-                            console.log(`event - socket          - b          - ${socket.id} - save     - client public key`)
+                            keepLog('error', 'socket', 'b', `${socket.id} - save     - failed - client public key`)
                         })
                     }
 
-                    new linkers({
+                    new db.connections({
                         socketId: socket.id,
-                        key: {
-                            client: {
-                                public: data
-                            },
-                            server: {
-                                public: key.exportKey('pkcs1-public-pem'),
-                                private: key.exportKey('pkcs1-private-pem')
+                        data: {
+                            key: {
+                                client: {
+                                    public: data
+                                },
+                                server: {
+                                    public: key.exportKey('pkcs1-public-pem'),
+                                    private: key.exportKey('pkcs1-private-pem')
+                                }
                             }
                         }
                     }).save()
@@ -88,15 +90,21 @@ mongoose.connect('mongodb://localhost:27017/transmister', {
 
 
                 socket.emit('b', key.exportKey('pkcs1-public-pem'))
-                console.log(`event - socket          - b          - ${socket.id} - send    - server public key`)
+                keepLog('event', 'socket', 'b', `${socket.id} - send    - server public key`)
 
                 encryptedSocket.on('e', (data) => {
-                    data = JSON.parse(data)
-
                     switch (data['event']) {
                         case 'test':
-                            console.log(`event - encryptedSocket - e          - ${socket.id} - test    - receive test message > content: ${data.testMsg}`)
+                            keepLog('event', 'encryptedSocket', 'e', `${socket.id} - test    - receive test message > content: ${data.testMsg}`)
                             break;
+
+                        case 'signUp':
+                            keepLog('event', 'encryptedSocket', 'e', `${socket.id} - signUp  - receive sign up message > username: ${data.data.username}`)
+                            new db.users({
+                                username: data.data.username,
+                                password: data.data.password
+                            }).save()
+                            keepLog('event', 'encryptedSocket', 'e', `${socket.id} - signUp  - success - save sign up info to db > username: ${db.users.findOne({ username: data.data.username }).then((ret) => { return ret.username })}`)
 
                         default:
                             break;
@@ -105,22 +113,22 @@ mongoose.connect('mongodb://localhost:27017/transmister', {
             })
 
             socket.on('disconnect', (reason) => {
-                console.log(`event - socket          - disconnect - ${socket.id}`)
+                keepLog('event', 'socket', 'disconnect', socket.id)
 
                 // delete when the user disconnect to the server
-                linkers.findOneAndDelete({ socketId: socket.id }).then((ret) => {
-                    console.log(`event - socket          - disconnect - ${socket.id} - delete  - recent keys`)
+                db.connections.findOneAndDelete({ socketId: socket.id }).then((ret) => {
+                    keepLog('event', 'socket', 'disconnect', `${socket.id} - delete  - recent connection`)
                 }).catch((ex) => {
-                    console.log(`error - socket          - disconnect - ${socket.id} - delete  - recent keys - ${ex}`)
+                    keepLog('error', 'socket', 'disconnect', `${socket.id} - delete  - recent connection`)
                 })
             })
         })
 
         http.listen(port, (err) => {
             if (err) throw err
-            console.log(`ready - started server on http://localhost:${port}`)
+            keepLog('ready', `started server on http://localhost:${port}`)
         })
     })
 }).catch((ex) => {
-    console.log(`error - db              - connection - failed  - ${ex.message}`);
+    keepLog('error', 'db', 'connection', `failed  - ${ex.message}`)
 })

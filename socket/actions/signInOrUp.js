@@ -1,4 +1,4 @@
-import socket from '../socket'
+import encryptedSocket from '../../encryption/client'
 
 /**
  * Send sign in or sign up data to server
@@ -8,12 +8,13 @@ import socket from '../socket'
  * @param {Function} callback Callback function
  */
 export default function signInOrUp(signInOrUp, username, password, callback) {
-    socket.emit("e", {
+    encryptedSocket.emit('e', {
         event: signInOrUp,
         data: {
             username: username,
             password: password
         }
     })
+
     callback()
 }
