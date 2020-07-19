@@ -11,10 +11,13 @@ body {
     --color-blue-theme-2: #4ea9ff;
     --color-blue-theme-3: #65b4ff;
     --color-blue-theme-4: #85c4ff;
-
     --color-blue-theme-text: #f0f8ff;
     --color-blue-theme-text-2: #d1e9ff;
     --color-blue-theme-text-3: #acd7ff;
+
+    /* Error theme colors */
+    --color-error-theme: #dd0000;
+    --color-error-theme-4: #ffcaca;
 
     /* Black & white colors */
     --color-background-white: #ffffff;

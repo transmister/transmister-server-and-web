@@ -24,24 +24,23 @@ function initializeEncryptionToServer() {
     socket.on('b', (data) => {
         keyPair.server.public = data
 
-        encryptedSocket = {
-            emit: (event, data) => {
-                socket.emit(event, new NodeRSA()
-                    .importKey(keyPair.server.public, 'pkcs1-public-pem')
-                    .encrypt(JSON.stringify(data), 'base64')
-                )
-            },
-            on: (event, listener) => {
-                socket.on(event, (data) => {
-                    listener(
-                        JSON.parse(
-                            new NodeRSA()
-                                .importKey(keyPair.client.private, 'pkcs1-private-pem')
-                                .decrypt(data, 'utf8')
-                        )
+        encryptedSocket.emit = (event, data) => {
+            socket.emit(event, new NodeRSA()
+                .importKey(keyPair.server.public, 'pkcs1-public-pem')
+                .encrypt(JSON.stringify(data), 'base64')
+            )
+        }
+
+        encryptedSocket.on = (event, listener) => {
+            socket.on(event, (data) => {
+                listener(
+                    JSON.parse(
+                        new NodeRSA()
+                            .importKey(keyPair.client.private, 'pkcs1-private-pem')
+                            .decrypt(data, 'utf8')
                     )
-                })
-            },
+                )
+            })
         }
 
         encryptedSocket.emit('e', {
@@ -50,9 +49,8 @@ function initializeEncryptionToServer() {
         })
 
         encryptedSocket.on('e', (data) => {
-            switch (data['event']) {
+            switch (data.event) {
                 case 'test':
-
                     break;
 
                 default:

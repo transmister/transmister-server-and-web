@@ -42,8 +42,17 @@ mongoose.connect('mongodb://localhost:27017/transmister', {
             keepLog('event', 'io', 'connection', socket.id)
 
             const encryptedSocket = {
-                emit: (event, data, publicKey) => {
-                    socket.emit(event, new NodeRSA().importKey(publicKey, 'pkcs1-public-pem').encrypt(JSON.stringify(data), 'base64'))
+                emit: (event, data) => {
+                    db.connections.findOne({ socketId: socket.id }).then(row => {
+                        if (row) {
+                            socket.emit(event, new NodeRSA()
+                                .importKey(row.data.key.client.public, 'pkcs1-public-pem')
+                                .encrypt(JSON.stringify(data), 'base64')
+                            )
+                        }
+                    }).catch((ex) => {
+                        keepLog('error', 'encryptedSocket', 'failed', ex)
+                    })
                 },
                 on: (event, listener) => {
                     socket.on(event, (data) => {
@@ -66,9 +75,9 @@ mongoose.connect('mongodb://localhost:27017/transmister', {
                 db.connections.findOne({ socketId: socket.id }).then((ret) => {
                     if (ret) {
                         db.connections.findOneAndDelete({ socketId: socket.id }).then((ret) => {
-                            keepLog('event', 'socket', 'b', `${socket.id} - save     - client public key`)
+                            keepLog('event', 'socket', 'b', `${socket.id} - save   - client public key`)
                         }).catch((ex) => {
-                            keepLog('error', 'socket', 'b', `${socket.id} - save     - failed - client public key`)
+                            keepLog('error', 'socket', 'b', `${socket.id} - save   - failed - client public key`)
                         })
                     }
 
@@ -90,21 +99,58 @@ mongoose.connect('mongodb://localhost:27017/transmister', {
 
 
                 socket.emit('b', key.exportKey('pkcs1-public-pem'))
-                keepLog('event', 'socket', 'b', `${socket.id} - send    - server public key`)
+                keepLog('event', 'socket', 'b', `${socket.id} - send  - server public key`)
 
                 encryptedSocket.on('e', (data) => {
-                    switch (data['event']) {
+                    switch (data.event) {
                         case 'test':
-                            keepLog('event', 'encryptedSocket', 'e', `${socket.id} - test    - receive test message > content: ${data.testMsg}`)
+                            keepLog('event', 'encryptedSocket', 'e', `${socket.id} - test  - receive test message > content: ${data.testMsg}`)
                             break;
 
                         case 'signUp':
                             keepLog('event', 'encryptedSocket', 'e', `${socket.id} - signUp  - receive sign up message > username: ${data.data.username}`)
+                            db.users.findOne({ username: data.data.username }).then((row) => {
+                                if (!row) {
+                                    new db.users({
+                                        username: data.data.username,
+                                        data: {
+                                            password: data.data.password,
+                                        },
+                                    }).save()
+                                    db.users.findOne({ username: data.data.username }).then((row) => {
+                                        encryptedSocket.emit('e', {
+                                            event: 'success',
+                                            data: {
+                                                successId: 'signUp.success'
+                                            }
+                                        })
+                                        keepLog('event', 'encryptedSocket', 'e', `${socket.id} - signUp  - success - save sign up info to db > username: ${row.username}`)
+                                    })
+                                } else {
+                                    encryptedSocket.emit('e', {
+                                        event: 'error',
+                                        data: {
+                                            errId: 'signUp.isTaken'
+                                        }
+                                    })
+                                    keepLog('event', 'encryptedSocket', 'e', `${socket.id} - signUp  - failed  - username: ${data.data.username} is already taken`)
+                                }
+                            })
+                            break;
+
+
+                        case 'signIn':
+                            keepLog('event', 'encryptedSocket', 'e', `${socket.id} - signIn  - receive sign in message > username: ${data.data.username}`)
                             new db.users({
                                 username: data.data.username,
-                                password: data.data.password
+                                data: {
+                                    password: data.data.password,
+                                },
                             }).save()
-                            keepLog('event', 'encryptedSocket', 'e', `${socket.id} - signUp  - success - save sign up info to db > username: ${db.users.findOne({ username: data.data.username }).then((ret) => { return ret.username })}`)
+                            db.users.findOne({ username: data.data.username }).then((row) => {
+                                keepLog('event', 'encryptedSocket', 'e', `${socket.id} - signIn  - success - save sign up info to db > username: ${row.username}`)
+                            })
+                            break;
 
                         default:
                             break;

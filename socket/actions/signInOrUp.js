@@ -1,4 +1,4 @@
-import encryptedSocket from '../../encryption/client'
+import { encryptedSocket, socketErrorFixHandler } from '../../encryption/client'
 
 /**
  * Send sign in or sign up data to server
@@ -16,5 +16,7 @@ export default function signInOrUp(signInOrUp, username, password, callback) {
         }
     })
 
-    callback()
+    if (typeof callback == 'function') {
+        callback()
+    }
 }

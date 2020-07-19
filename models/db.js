@@ -66,17 +66,19 @@ const Schema = {
             required: true,
             trim: true
         },
-        password: {
-            type: String,
-            required: true,
-            trim: false
-        }
+        data: {
+            password: {
+                type: String,
+                required: true,
+                trim: false
+            },
+        },
     })
 }
 
 const db = {
     connections: mongoose.model('connections', Schema.connections),
-    users: mongoose.model('users', Schema.connections)
+    users: mongoose.model('users', Schema.users)
 }
 
 module.exports = db

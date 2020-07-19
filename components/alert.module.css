@@ -1,0 +1,23 @@
+.alert {
+    border-radius: var(--border-radius);
+    padding: 8px;
+    margin: 4px 0;
+}
+
+.alert * {
+    margin: 0;
+}
+
+.alert[type='error'] {
+    color: var(--color-error-theme);
+    background-color: var(--color-error-theme-4);
+}
+
+.alertTitle {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.alertDesc {
+    font-size: 14px;
+}

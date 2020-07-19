@@ -2,6 +2,8 @@ import { TabView, Tabs, Tab, TabPanel } from '../components/tabView'
 import TextField from './textField'
 import Button from './button'
 import signInOrUp from '../socket/actions/signInOrUp'
+import AlertGroup from '../components/alertGroup'
+import encryptedSocket from '../encryption/client'
 
 var data = {
     signUp: {
@@ -16,6 +18,7 @@ var data = {
 
 function SignInOrSignUp({ setFlyoutOpen }) {
     const [currentTabIndex, setCurrentTabIndex] = React.useState(0)
+    const [signUpErrors, setSignUpErrors] = React.useState([])
 
     return <TabView tabBar={<Tabs>
         <Tab index={0} currentIndex={currentTabIndex} setIndex={setCurrentTabIndex}>Sign Up</Tab>
@@ -29,9 +32,29 @@ function SignInOrSignUp({ setFlyoutOpen }) {
             <TextField value={data.signUp.password} placeholder='Password' type='password' fluid={true} onChange={(e) => {
                 data.signUp.password = e.target.value
             }} />
+            <AlertGroup alerts={signUpErrors} />
             <div style={{ textAlign: 'right' }}>
                 <Button onClick={() => {
-                    signInOrUp('signUp', data.signUp.username, data.signUp.password, () => { setFlyoutOpen(false) })
+                    // socketErrorFixHandler.reg('signUp.isTaken', () => {
+                    //     setSignUpErrors(signUpErrors.push({
+                    //         type: 'error',
+                    //         title: 'Username is already taken',
+                    //         desc: 'Your username is already taken by others, you need to change one.',
+                    //     }))
+                    // })
+                    encryptedSocket.on('e', (data) => {
+                        if (data.event == 'error' && data.data.errId == 'signUp.isTaken') {
+                            setSignUpErrors([{
+                                type: 'error',
+                                title: 'Username is already taken',
+                                desc: 'Your username is already taken by others, you need to change one.',
+                            }])
+                        } else if (data.event == 'success' && data.data.successId == 'signUp.success') {
+                            console.log('ssss')
+                            setFlyoutOpen(false)
+                        }
+                    })
+                    signInOrUp('signUp', data.signUp.username, data.signUp.password)
                 }}>Sign Up</Button>
             </div>
         </TabPanel>
