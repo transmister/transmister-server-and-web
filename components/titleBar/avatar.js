@@ -6,7 +6,10 @@ import { globalVariables } from '../../global/global'
 
 function Avatar({ signedIn, setSignedIn, setFlyoutContent, setFlyoutOpen }) {
     if (signedIn) {
-        <p>hello</p>
+        return (<div className={`${styles.avatar} ${styles.avatarSignedInTrue}`}>
+            <p>{signedIn.username}</p>
+            <Button className={styles.avatarSignedInTrueMoreButton}><i class="ri-more-line"></i></Button>
+        </div>)
     } else {
         return (<Button className={`${styles.avatar} ${styles.avatarSignedInFalse}`} onClick={() => {
             setFlyoutContent(<>

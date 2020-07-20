@@ -5,7 +5,7 @@ import signInOrUp from '../socket/actions/signInOrUp'
 import AlertGroup from '../components/alertGroup'
 import encryptedSocket from '../encryption/client'
 
-var data = {
+var signInOrSignUpInputData = {
     signUp: {
         username: undefined,
         password: undefined
@@ -26,11 +26,11 @@ function SignInOrSignUp({ setFlyoutOpen, setSignedIn }) {
     </Tabs>
     } tabPanel={<>
         <TabPanel index={0} currentIndex={currentTabIndex}>
-            <TextField value={data.signUp.username} placeholder='Username' type='username' fluid={true} onChange={(e) => {
-                data.signUp.username = e.target.value
+            <TextField value={signInOrSignUpInputData.signUp.username} placeholder='Username' type='username' fluid={true} onChange={(e) => {
+                signInOrSignUpInputData.signUp.username = e.target.value
             }} />
-            <TextField value={data.signUp.password} placeholder='Password' type='password' fluid={true} onChange={(e) => {
-                data.signUp.password = e.target.value
+            <TextField value={signInOrSignUpInputData.signUp.password} placeholder='Password' type='password' fluid={true} onChange={(e) => {
+                signInOrSignUpInputData.signUp.password = e.target.value
             }} />
             <AlertGroup alerts={signUpErrors} />
             <div style={{ textAlign: 'right' }}>
@@ -43,24 +43,26 @@ function SignInOrSignUp({ setFlyoutOpen, setSignedIn }) {
                                 desc: 'Your username is already taken by others, you need to change one.',
                             }])
                         } else if (data.event == 'success' && data.data.successId == 'signUp.success') {
-                            setSignedIn(true)
+                            setSignedIn({
+                                username: signInOrSignUpInputData.signUp.username
+                            })
                             setFlyoutOpen(false)
                         }
                     })
-                    signInOrUp('signUp', data.signUp.username, data.signUp.password)
+                    signInOrUp('signUp', signInOrSignUpInputData.signUp.username, signInOrSignUpInputData.signUp.password)
                 }}>Sign Up</Button>
             </div>
         </TabPanel>
         <TabPanel index={1} currentIndex={currentTabIndex}>
-            <TextField value={data.signIn.username} placeholder='Username' type='username' fluid={true} onChange={(e) => {
-                data.signIn.username = e.target.value
+            <TextField value={signInOrSignUpInputData.signIn.username} placeholder='Username' type='username' fluid={true} onChange={(e) => {
+                signInOrSignUpInputData.signIn.username = e.target.value
             }} />
-            <TextField value={data.signIn.password} placeholder='Password' type='password' fluid={true} onChange={(e) => {
-                data.signIn.password = e.target.value
+            <TextField value={signInOrSignUpInputData.signIn.password} placeholder='Password' type='password' fluid={true} onChange={(e) => {
+                signInOrSignUpInputData.signIn.password = e.target.value
             }} />
             <div style={{ textAlign: 'right' }}>
                 <Button onClick={() => {
-                    signInOrUp('signIn', data.signIn.username, data.signIn.password, () => { setFlyoutOpen(false) })
+                    signInOrUp('signIn', signInOrSignUpInputData.signIn.username, signInOrSignUpInputData.signIn.password, () => { setFlyoutOpen(false) })
                 }}>Sign In</Button>
             </div>
         </TabPanel>
