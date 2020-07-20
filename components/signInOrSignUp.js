@@ -16,7 +16,7 @@ var data = {
     }
 }
 
-function SignInOrSignUp({ setFlyoutOpen }) {
+function SignInOrSignUp({ setFlyoutOpen, setSignedIn }) {
     const [currentTabIndex, setCurrentTabIndex] = React.useState(0)
     const [signUpErrors, setSignUpErrors] = React.useState([])
 
@@ -35,13 +35,6 @@ function SignInOrSignUp({ setFlyoutOpen }) {
             <AlertGroup alerts={signUpErrors} />
             <div style={{ textAlign: 'right' }}>
                 <Button onClick={() => {
-                    // socketErrorFixHandler.reg('signUp.isTaken', () => {
-                    //     setSignUpErrors(signUpErrors.push({
-                    //         type: 'error',
-                    //         title: 'Username is already taken',
-                    //         desc: 'Your username is already taken by others, you need to change one.',
-                    //     }))
-                    // })
                     encryptedSocket.on('e', (data) => {
                         if (data.event == 'error' && data.data.errId == 'signUp.isTaken') {
                             setSignUpErrors([{
@@ -50,7 +43,7 @@ function SignInOrSignUp({ setFlyoutOpen }) {
                                 desc: 'Your username is already taken by others, you need to change one.',
                             }])
                         } else if (data.event == 'success' && data.data.successId == 'signUp.success') {
-                            console.log('ssss')
+                            setSignedIn(true)
                             setFlyoutOpen(false)
                         }
                     })

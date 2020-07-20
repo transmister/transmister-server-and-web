@@ -38,4 +38,9 @@ body {
     --hover-transition: all 1s;
     --active-transition: all 0.15s;
     --show-hide-transition: all 0.35s;
+
+    /* Durations */
+    --hover-duration: 1s;
+    --active-duration: 0.15s;
+    --show-hide-duration: 0.35s;
 }

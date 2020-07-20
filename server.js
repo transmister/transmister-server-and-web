@@ -116,16 +116,18 @@ mongoose.connect('mongodb://localhost:27017/transmister', {
                                         data: {
                                             password: data.data.password,
                                         },
-                                    }).save()
-                                    db.users.findOne({ username: data.data.username }).then((row) => {
-                                        encryptedSocket.emit('e', {
-                                            event: 'success',
-                                            data: {
-                                                successId: 'signUp.success'
-                                            }
+                                    }).save().then(() => {
+                                        db.users.findOne({ username: data.data.username }).then((row) => {
+                                            encryptedSocket.emit('e', {
+                                                event: 'success',
+                                                data: {
+                                                    successId: 'signUp.success'
+                                                }
+                                            })
+                                            keepLog('event', 'encryptedSocket', 'e', `${socket.id} - signUp  - success - save sign up info to db > username: ${row.username}`)
                                         })
-                                        keepLog('event', 'encryptedSocket', 'e', `${socket.id} - signUp  - success - save sign up info to db > username: ${row.username}`)
                                     })
+
                                 } else {
                                     encryptedSocket.emit('e', {
                                         event: 'error',

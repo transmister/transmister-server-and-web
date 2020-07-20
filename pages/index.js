@@ -9,13 +9,20 @@ export default function Home() {
 
   const [flyoutOpen, setFlyoutOpen] = React.useState(false)
   const [flyoutContent, setFlyoutContent] = React.useState(<></>)
+  const [signedIn, setSignedIn] = React.useState(false)
 
   return (
     <>
       <Head>
         <title>{globalVariables.siteName}</title>
       </Head>
-      <TitleBar title={globalVariables.appName} setFlyoutContent={setFlyoutContent} setFlyoutOpen={setFlyoutOpen}></TitleBar>
+      <TitleBar
+        title={globalVariables.appName}
+        setFlyoutContent={setFlyoutContent}
+        setFlyoutOpen={setFlyoutOpen}
+        signedIn={signedIn}
+        setSignedIn={setSignedIn}
+      />
       <MasterDetail
         master={[
           {
@@ -35,7 +42,7 @@ export default function Home() {
           <>
             <ChatView />
           </>} />
-      <Flyout open={flyoutOpen}>
+      <Flyout open={flyoutOpen} setFlyoutOpen={setFlyoutOpen}>
         {flyoutContent}
       </Flyout>
     </>

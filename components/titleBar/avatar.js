@@ -4,13 +4,15 @@ import SignInOrSignUp from '../signInOrSignUp'
 import { FlyoutTitle, FlyoutContent, FlyoutFooter } from '../flyout'
 import { globalVariables } from '../../global/global'
 
-function Avatar({ signedIn, setFlyoutContent, setFlyoutOpen }) {
-    return (signedIn ? <></> :
-        <Button className={`${styles.avatar} ${styles.avatarSignedInFalse}`} onClick={() => {
+function Avatar({ signedIn, setSignedIn, setFlyoutContent, setFlyoutOpen }) {
+    if (signedIn) {
+        <p>hello</p>
+    } else {
+        return (<Button className={`${styles.avatar} ${styles.avatarSignedInFalse}`} onClick={() => {
             setFlyoutContent(<>
                 <FlyoutTitle title={`Sign in or sign up to ${globalVariables.prodName}`} showCloseButton={true} closeFlyout={setFlyoutOpen} />
                 <FlyoutContent>
-                    <SignInOrSignUp setFlyoutOpen={setFlyoutOpen} />
+                    <SignInOrSignUp setFlyoutOpen={setFlyoutOpen} setSignedIn={setSignedIn} />
                 </FlyoutContent>
                 <FlyoutFooter align='right'>
                     <Button onClick={() => {
@@ -19,8 +21,8 @@ function Avatar({ signedIn, setFlyoutContent, setFlyoutOpen }) {
                 </FlyoutFooter>
             </>)
             setFlyoutOpen(true)
-        }}>Sign Up</Button>
-    )
+        }}>Sign Up</Button>)
+    }
 }
 
 export default Avatar

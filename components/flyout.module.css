@@ -1,3 +1,25 @@
+@keyframes flyoutFadeIn {
+    0% {
+        pointer-events: none;
+        opacity: 0;
+    }
+    100% {
+        pointer-events: initial;
+        opacity: 1;
+    }
+}
+
+.flyoutMask {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, .15);
+    /* animation: flyoutFadeIn var(--show-hide-duration);
+    animation-fill-mode: forwards; */
+}
+
 .flyout {
     position: fixed;
     left: 50%;
@@ -8,6 +30,8 @@
     box-shadow: var(--shadow-dreamy);
     width: 550px;
     max-width: calc(100% - 16px);
+    /* animation: flyoutFadeIn var(--show-hide-duration);
+    animation-fill-mode: forwards; */
 }
 
 .title {
