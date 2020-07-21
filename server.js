@@ -132,7 +132,7 @@ mongoose.connect('mongodb://localhost:27017/transmister', {
                                     encryptedSocket.emit('e', {
                                         event: 'error',
                                         data: {
-                                            errId: 'signUp.isTaken'
+                                            errId: 'signUp.usernameIsTaken'
                                         }
                                     })
                                     keepLog('event', 'encryptedSocket', 'e', `${socket.id} - signUp  - failed  - username: ${data.data.username} is already taken`)

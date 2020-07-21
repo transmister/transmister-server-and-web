@@ -1,0 +1,31 @@
+.menu {
+    width: max-content;
+    height: calc(max-content + 4px);
+    background-color: var(--color-background-white);
+    padding: 8px 0;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-shorter);
+}
+
+.menuItem {
+    display: block;
+    border: none;
+    outline: none;
+    width: 100%;
+    padding: 8px;
+    padding-right: 16px;
+    background-color: var(--color-background-white);
+    text-align: left;
+    font-size: 16px;
+    transition: var(--hover-transition);
+}
+
+.menuItem:hover {
+    background-color: var(--color-blue-theme-text);
+    transition: var(--hover-transition);
+}
+
+.menuItem:active {
+    background-color: var(--color-blue-theme-text-2);
+    transition: var(--active-transition);
+}

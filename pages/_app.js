@@ -1,5 +1,5 @@
 import '../global/global.css'
-import { initializeEncryptionToServer } from '../encryption/client'
+import { initializeEncryptionToServer } from '../socket/encryption'
 
 export default function App({ Component, pageProps }) {
     initializeEncryptionToServer()

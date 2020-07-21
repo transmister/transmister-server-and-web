@@ -3,7 +3,7 @@ import TextField from './textField'
 import Button from './button'
 import signInOrUp from '../socket/actions/signInOrUp'
 import AlertGroup from '../components/alertGroup'
-import encryptedSocket from '../encryption/client'
+import encryptedSocket from '../socket/encryption'
 
 var signInOrSignUpInputData = {
     signUp: {
@@ -35,21 +35,37 @@ function SignInOrSignUp({ setFlyoutOpen, setSignedIn }) {
             <AlertGroup alerts={signUpErrors} />
             <div style={{ textAlign: 'right' }}>
                 <Button onClick={() => {
-                    encryptedSocket.on('e', (data) => {
-                        if (data.event == 'error' && data.data.errId == 'signUp.isTaken') {
+                    // encryptedSocket.on('e', (data) => {
+                    //     if (data.event == 'error' && data.data.errId == 'signUp.usernameIsTaken') {
+                    //         setSignUpErrors([{
+                    //             type: 'error',
+                    //             title: 'Username is already taken',
+                    //             desc: 'Your username is already taken by others, you need to change one.',
+                    //         }])
+                    //     } else if (data.event == 'success' && data.data.successId == 'signUp.success') {
+                    //         signInOrUp('signIn', signInOrSignUpInputData.signUp.username, signInOrSignUpInputData.signUp.password)
+                    //         setSignedIn({
+                    //             username: signInOrSignUpInputData.signUp.username
+                    //         })
+                    //         setFlyoutOpen(false)
+                    //     }
+                    // })
+                    signInOrUp('signUp', signInOrSignUpInputData.signUp.username, signInOrSignUpInputData.signUp.password, (data) => {
+                        if (data.event == 'error' && data.data.errId == 'signUp.usernameIsTaken') {
                             setSignUpErrors([{
                                 type: 'error',
                                 title: 'Username is already taken',
                                 desc: 'Your username is already taken by others, you need to change one.',
                             }])
                         } else if (data.event == 'success' && data.data.successId == 'signUp.success') {
-                            setSignedIn({
-                                username: signInOrSignUpInputData.signUp.username
+                            signInOrUp('signIn', signInOrSignUpInputData.signUp.username, signInOrSignUpInputData.signUp.password, (data) => {
+                                setSignedIn({
+                                    username: signInOrSignUpInputData.signUp.username
+                                })
                             })
                             setFlyoutOpen(false)
                         }
                     })
-                    signInOrUp('signUp', signInOrSignUpInputData.signUp.username, signInOrSignUpInputData.signUp.password)
                 }}>Sign Up</Button>
             </div>
         </TabPanel>

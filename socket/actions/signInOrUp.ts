@@ -1,4 +1,4 @@
-import { encryptedSocket, socketErrorFixHandler } from '../../encryption/client'
+import { encryptedSocket } from '../encryption'
 
 /**
  * Send sign in or sign up data to server
@@ -7,7 +7,7 @@ import { encryptedSocket, socketErrorFixHandler } from '../../encryption/client'
  * @param {String} password The password
  * @param {Function} callback Callback function
  */
-export default function signInOrUp(signInOrUp, username, password, callback) {
+export default function signInOrUp(signInOrUp: 'signIn' | 'signUp', username: string, password: string, callback: Function) {
     encryptedSocket.emit('e', {
         event: signInOrUp,
         data: {
@@ -16,7 +16,11 @@ export default function signInOrUp(signInOrUp, username, password, callback) {
         }
     })
 
-    if (typeof callback == 'function') {
-        callback()
-    }
+    encryptedSocket.on('e', (data) => {
+        callback(data)
+    })
+
+    // if (typeof callback == 'function') {
+    //     callback()
+    // }
 }
