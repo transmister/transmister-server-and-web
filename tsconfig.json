@@ -24,10 +24,6 @@
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-<<<<<<< HEAD
-    "**/*.tsx", "pages/index.js", "components/signInOrSignUp.js"
-=======
     "**/*.tsx"
->>>>>>> 5ea3d453c314d13b353ce48a5e7a09d354ac7e12
   ]
 }

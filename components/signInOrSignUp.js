@@ -1,24 +1,12 @@
 import { TabView, Tabs, Tab, TabPanel } from './tabView'
 import TextField from './textField'
 import Button from './button'
-import signInOrUp from '../socket/actions/signInOrUp'
+import signInOrUp from '../socket/actions/userAction'
 import AlertGroup from './alertGroup'
-import encryptedSocket from '../socket/encryption'
 
 var userData = {
     username: undefined,
     password: undefined
-}
-
-var signInOrSignUpInputData = {
-    signUp: {
-        username: undefined,
-        password: undefined
-    },
-    signIn: {
-        username: undefined,
-        password: undefined
-    }
 }
 
 function SignInOrSignUp({ setFlyoutOpen, setSignedIn }) {
@@ -31,47 +19,46 @@ function SignInOrSignUp({ setFlyoutOpen, setSignedIn }) {
     </Tabs>
     } tabPanel={<>
         <TabPanel >
-            <TextField value={signInOrSignUpInputData.signUp.username} placeholder='Username' type='username' fluid={true} onChange={(e) => {
-                signInOrSignUpInputData.signUp.username = e.target.value
+            <TextField value={userData.username} placeholder='Username' type='text' fluid={true} onChange={(e) => {
+                userData.username = e.target.value
             }} />
-            <TextField value={signInOrSignUpInputData.signUp.password} placeholder='Password' type='password' fluid={true} onChange={(e) => {
-                signInOrSignUpInputData.signUp.password = e.target.value
+            <TextField value={userData.password} placeholder='Password' type='password' fluid={true} onChange={(e) => {
+                userData.password = e.target.value
             }} />
             <AlertGroup alerts={signUpErrors} />
             <div style={{ textAlign: 'right' }}>
                 <Button onClick={() => {
-                    signInOrUp('signUp', signInOrSignUpInputData.signUp.username, signInOrSignUpInputData.signUp.password, (data) => {
-                        if (data.event == 'error' && data.data.errId == 'signUp.usernameIsTaken') {
-                            setSignUpErrors([{
-                                type: 'error',
-                                title: 'Username is already taken',
-                                desc: 'Your username is already taken by others, you need to change one.',
-                            }])
-                        } else if (data.event == 'success' && data.data.successId == 'signUp.success') {
-                            signInOrUp('signIn', signInOrSignUpInputData.signUp.username, signInOrSignUpInputData.signUp.password, (data) => {
+                    if(!userData.username || !userData.password) return
+                    signInOrUp(currentTabIndex == 0 ? 'signUp' : 'signIn', userData, data => {
+                        switch (data.event) {
+                            case 'error':
+                                if(data.data.errId == 'signUp.usernameIsTaken'){
+                                    setSignUpErrors([{
+                                        type: 'error',
+                                        title: 'Username is already taken',
+                                        desc: 'Your username is already taken by others, you need to change one.',
+                                    }])
+                                } else if (data.data.errId == 'signIn.failed'){
+                                    setSignUpErrors([{
+                                        type: 'error',
+                                        title: 'Username or Password is failed',
+                                        desc: 'You may have forgotten your username or password.',
+                                    }])
+                                }
+                                break;
+                        
+                            default:
+                                // 登录或者注册成功
                                 setSignedIn({
-                                    username: signInOrSignUpInputData.signUp.username
+                                    username: userData.username
                                 })
-                            })
-                            setFlyoutOpen(false)
+                                setFlyoutOpen(false)
+                                break;
                         }
                     })
-                }}>Sign Up</Button>
+                }}>{currentTabIndex == 0 ? 'Sign Up' : 'Sign In'}</Button>
             </div>
         </TabPanel>
-        {/* <TabPanel index={1} currentIndex={currentTabIndex}>
-            <TextField value={signInOrSignUpInputData.signIn.username} placeholder='Username' type='username' fluid={true} onChange={(e) => {
-                signInOrSignUpInputData.signIn.username = e.target.value
-            }} />
-            <TextField value={signInOrSignUpInputData.signIn.password} placeholder='Password' type='password' fluid={true} onChange={(e) => {
-                signInOrSignUpInputData.signIn.password = e.target.value
-            }} />
-            <div style={{ textAlign: 'right' }}>
-                <Button onClick={() => {
-                    signInOrUp('signIn', signInOrSignUpInputData.signIn.username, signInOrSignUpInputData.signIn.password, () => { setFlyoutOpen(false) })
-                }}>Sign In</Button>
-            </div>
-        </TabPanel> */}
     </>} />
 }
 
