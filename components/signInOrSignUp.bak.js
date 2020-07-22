@@ -1,14 +1,9 @@
-import { TabView, Tabs, Tab, TabPanel } from './tabView'
+import { TabView, Tabs, Tab, TabPanel } from '../components/tabView'
 import TextField from './textField'
 import Button from './button'
 import signInOrUp from '../socket/actions/signInOrUp'
-import AlertGroup from './alertGroup'
+import AlertGroup from '../components/alertGroup'
 import encryptedSocket from '../socket/encryption'
-
-var userData = {
-    username: undefined,
-    password: undefined
-}
 
 var signInOrSignUpInputData = {
     signUp: {
@@ -30,7 +25,7 @@ function SignInOrSignUp({ setFlyoutOpen, setSignedIn }) {
         <Tab index={1} currentIndex={currentTabIndex} setIndex={setCurrentTabIndex}>Sign In</Tab>
     </Tabs>
     } tabPanel={<>
-        <TabPanel >
+        <TabPanel index={0} currentIndex={currentTabIndex}>
             <TextField value={signInOrSignUpInputData.signUp.username} placeholder='Username' type='username' fluid={true} onChange={(e) => {
                 signInOrSignUpInputData.signUp.username = e.target.value
             }} />
@@ -74,7 +69,7 @@ function SignInOrSignUp({ setFlyoutOpen, setSignedIn }) {
                 }}>Sign Up</Button>
             </div>
         </TabPanel>
-        {/* <TabPanel index={1} currentIndex={currentTabIndex}>
+        <TabPanel index={1} currentIndex={currentTabIndex}>
             <TextField value={signInOrSignUpInputData.signIn.username} placeholder='Username' type='username' fluid={true} onChange={(e) => {
                 signInOrSignUpInputData.signIn.username = e.target.value
             }} />
@@ -86,7 +81,7 @@ function SignInOrSignUp({ setFlyoutOpen, setSignedIn }) {
                     signInOrUp('signIn', signInOrSignUpInputData.signIn.username, signInOrSignUpInputData.signIn.password, () => { setFlyoutOpen(false) })
                 }}>Sign In</Button>
             </div>
-        </TabPanel> */}
+        </TabPanel>
     </>} />
 }
 
