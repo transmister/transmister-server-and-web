@@ -40,21 +40,6 @@ function SignInOrSignUp({ setFlyoutOpen, setSignedIn }) {
             <AlertGroup alerts={signUpErrors} />
             <div style={{ textAlign: 'right' }}>
                 <Button onClick={() => {
-                    // encryptedSocket.on('e', (data) => {
-                    //     if (data.event == 'error' && data.data.errId == 'signUp.usernameIsTaken') {
-                    //         setSignUpErrors([{
-                    //             type: 'error',
-                    //             title: 'Username is already taken',
-                    //             desc: 'Your username is already taken by others, you need to change one.',
-                    //         }])
-                    //     } else if (data.event == 'success' && data.data.successId == 'signUp.success') {
-                    //         signInOrUp('signIn', signInOrSignUpInputData.signUp.username, signInOrSignUpInputData.signUp.password)
-                    //         setSignedIn({
-                    //             username: signInOrSignUpInputData.signUp.username
-                    //         })
-                    //         setFlyoutOpen(false)
-                    //     }
-                    // })
                     signInOrUp('signUp', signInOrSignUpInputData.signUp.username, signInOrSignUpInputData.signUp.password, (data) => {
                         if (data.event == 'error' && data.data.errId == 'signUp.usernameIsTaken') {
                             setSignUpErrors([{
