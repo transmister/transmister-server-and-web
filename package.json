@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "init": "node init.js",
     "dev": "node server.js",
     "build": "npx next build",
     "start": "NODE_ENV=production node server.js"
