@@ -1,10 +1,8 @@
 # Encrpted Transmission
 
-To send encrypted message to the server by socket.io, you need to initialize a pair of RSA keys then send to the server.
+To send encrypted message to the server by socket.io, you need to initialize an RSA key pair then send to the server.
 
-## Initialize a Pair of RSA Keys
-
-The length of the pair RSA keys must be 1024 or greater, After initialization, send the public key in **PKCS#1 PEM** format to the server with `event: 'b'`:
+The length of the RSA key pair must be 1024 or greater, After initialization, send the public key in **PKCS#1 PEM** format to the server with `event: 'b'`:
 
 ```javascript
 socket.emit('b', publicKey)
@@ -21,7 +19,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 **Remember to save your private key!**
 
-Then server will initialize a pair of RSA keys and send it in **PKCS#1 PEM** format to you with `event: 'b'`, you should receive it like this:
+Then server will also initialize an RSA key pair and send it in **PKCS#1 PEM** format to you with `event: 'b'`, you should receive it like this:
 
 ```javascript
 socket.on('b', (publicKey) => { /* save `publicKey` */ })
