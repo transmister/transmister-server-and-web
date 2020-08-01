@@ -2,7 +2,7 @@
 
 To connect to the server, you need to install [socket.io](https://socket.io/) to your project.
 
-When the server is running as default settings, you can visit http://localhost:80 locally by the browser on the server, or the server's IP address, hostname or domain.
+When the server is running as the default configuration, you can visit http://localhost:80 locally by the browser on the server, or the server's IP address, hostname or domain.
 
 Use socket.io to connect to the address of the web version of Transmister. In JavaScript, it looks like this:
 
