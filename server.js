@@ -102,14 +102,12 @@ mongoose.connect('mongodb://localhost:27017/transmister', {
                 keepLog('event', 'socket', 'b', `${socket.id} - send  - server public key`)
 
                 encryptedSocket.on('e', (data) => {
-                    console.log(data)
                     switch (data.event) {
                         case 'test':
                             keepLog('event', 'encryptedSocket', 'e', `${socket.id} - test  - receive test message > content: ${data.testMsg}`)
                             break;
 
                         case 'signUp':
-                            // 注意： 一般情况下，密码不能存明文
                             keepLog('event', 'encryptedSocket', 'e', `${socket.id} - signUp  - receive sign up message > username: ${data.data.username}`)
                             db.users.findOne({ username: data.data.username }).then((row) => {
                                 if (!row) {
@@ -118,23 +116,14 @@ mongoose.connect('mongodb://localhost:27017/transmister', {
                                         data: {
                                             password: data.data.password,
                                         },
-                                    }).save().then(ret => {
+                                    }).save().then((row) => {
                                         encryptedSocket.emit('e', {
                                             event: 'success',
                                             data: {
                                                 successId: 'signUp.success'
                                             }
                                         })
-                                        keepLog('event', 'encryptedSocket', 'e', `${socket.id} - signUp  - success - save sign up info to db > username: ${ret.username}`)
-                                        // db.users.findOne({ username: data.data.username }).then((row) => {
-                                        //     encryptedSocket.emit('e', {
-                                        //         event: 'success',
-                                        //         data: {
-                                        //             successId: 'signUp.success'
-                                        //         }
-                                        //     })
-                                        //     keepLog('event', 'encryptedSocket', 'e', `${socket.id} - signUp  - success - save sign up info to db > username: ${row.username}`)
-                                        // })
+                                        keepLog('event', 'encryptedSocket', 'e', `${socket.id} - signUp  - success - save sign up info to db > username: ${row.username}`)
                                     })
 
                                 } else {
@@ -152,30 +141,30 @@ mongoose.connect('mongodb://localhost:27017/transmister', {
 
                         case 'signIn':
                             keepLog('event', 'encryptedSocket', 'e', `${socket.id} - signIn  - receive sign in message > username: ${data.data.username}`)
-                            
-                            db.users.findOne({ 
+
+                            db.users.findOne({
                                 username: data.data.username,
                                 data: {
                                     password: data.data.password,
                                 }
                             }).then(row => {
-                                    if(!row){
-                                        encryptedSocket.emit('e', {
-                                            event: 'error',
-                                            data: {
-                                                errId: 'signIn.failed'
-                                            }
-                                        })
-                                        keepLog('event', 'encryptedSocket', 'e', `${socket.id} - signIn  - failed - Incorrect username or passowrd`)
-                                    }else {
-                                        encryptedSocket.emit('e', {
-                                            event: 'success',
-                                            data: {
-                                                successId: 'signIn.success'
-                                            }
-                                        })
-                                        keepLog('event', 'encryptedSocket', 'e', `${socket.id} - signIn  - success - find in db > username: ${row.username}`)
-                                    }
+                                if (!row) {
+                                    encryptedSocket.emit('e', {
+                                        event: 'error',
+                                        data: {
+                                            errId: 'signIn.incorrectUsernameOrPassword'
+                                        }
+                                    })
+                                    keepLog('event', 'encryptedSocket', 'e', `${socket.id} - signIn  - failed - incorrect username or passowrd`)
+                                } else {
+                                    encryptedSocket.emit('e', {
+                                        event: 'success',
+                                        data: {
+                                            successId: 'signIn.success'
+                                        }
+                                    })
+                                    keepLog('event', 'encryptedSocket', 'e', `${socket.id} - signIn  - success - find in db > username: ${row.username}`)
+                                }
                             })
                             break;
 

@@ -1,7 +1,7 @@
 import styles from './menu.module.css'
 
-function Menu(props?: {
-    items: Array<any>
+function Menu(props: {
+    items: Array<JSX.Element>
 }) {
     var tmp = []
     for (const i in props.items) {

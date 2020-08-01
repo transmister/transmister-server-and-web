@@ -43,20 +43,23 @@ function initializeEncryptionToServer() {
             })
         }
 
-        encryptedSocket.emit('e', {
-            event: 'test',
-            testMsg: `${socket.id} is testing, time: ${new Date().getFullYear()}-${(new Date().getMonth() + 1)}-${new Date().getDate()} - ${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`
-        })
+        if (process.env.NODE_ENV != 'production') {
+            encryptedSocket.emit('e', {
+                event: 'test',
+                testMsg: `${socket.id} is testing, time: ${new Date().getFullYear()}-${(new Date().getMonth() + 1)}-${new Date().getDate()} - ${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`
+            })
 
-        encryptedSocket.on('e', (data) => {
-            switch (data.event) {
-                case 'test':
-                    break;
+        }
 
-                default:
-                    break;
-            }
-        })
+        // encryptedSocket.on('e', (data) => {
+        //     switch (data.event) {
+        //         case 'test':
+        //             break;
+
+        //         default:
+        //             break;
+        //     }
+        // })
     })
 }
 

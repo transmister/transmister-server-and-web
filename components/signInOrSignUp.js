@@ -1,65 +1,84 @@
 import { TabView, Tabs, Tab, TabPanel } from './tabView'
 import TextField from './textField'
 import Button from './button'
-import signInOrUp from '../socket/actions/userAction'
+import encryptedSocket from '../socket/encryption'
 import AlertGroup from './alertGroup'
+import Alert from './alert'
 
-var userData = {
+var inputData = {
     username: undefined,
     password: undefined
 }
 
 function SignInOrSignUp({ setFlyoutOpen, setSignedIn }) {
     const [currentTabIndex, setCurrentTabIndex] = React.useState(0)
-    const [signUpErrors, setSignUpErrors] = React.useState([])
+    const [signInOrSignUpErrors, setSignInOrSignUpErrors] = React.useState([])
 
-    return <TabView tabBar={<Tabs>
-        <Tab index={0} currentIndex={currentTabIndex} setIndex={setCurrentTabIndex}>Sign Up</Tab>
-        <Tab index={1} currentIndex={currentTabIndex} setIndex={setCurrentTabIndex}>Sign In</Tab>
-    </Tabs>
-    } tabPanel={<>
-        <TabPanel >
-            <TextField value={userData.username} placeholder='Username' type='text' fluid={true} onChange={(e) => {
-                userData.username = e.target.value
-            }} />
-            <TextField value={userData.password} placeholder='Password' type='password' fluid={true} onChange={(e) => {
-                userData.password = e.target.value
-            }} />
-            <AlertGroup alerts={signUpErrors} />
-            <div style={{ textAlign: 'right' }}>
-                <Button onClick={() => {
-                    if(!userData.username || !userData.password) return
-                    signInOrUp(currentTabIndex == 0 ? 'signUp' : 'signIn', userData, data => {
-                        switch (data.event) {
-                            case 'error':
-                                if(data.data.errId == 'signUp.usernameIsTaken'){
-                                    setSignUpErrors([{
-                                        type: 'error',
-                                        title: 'Username is already taken',
-                                        desc: 'Your username is already taken by others, you need to change one.',
-                                    }])
-                                } else if (data.data.errId == 'signIn.failed'){
-                                    setSignUpErrors([{
-                                        type: 'error',
-                                        title: 'Username or Password is failed',
-                                        desc: 'You may have forgotten your username or password.',
-                                    }])
-                                }
-                                break;
-                        
-                            default:
-                                // 登录或者注册成功
-                                setSignedIn({
-                                    username: userData.username
+    return <TabView
+        currentIndex={currentTabIndex}
+        setIndex={setCurrentTabIndex}
+        maxIndex={1}
+        tabBarBuilder={(i, setIndex) => {
+            return [
+                <Tab index={0} currentIndex={currentTabIndex} setIndex={setIndex}>Sign Up</Tab>,
+                <Tab index={1} currentIndex={currentTabIndex} setIndex={setIndex}>Sign In</Tab>
+            ][i]
+        }}
+        tabPanelBuilder={(i) => {
+            return <TabPanel index={i} currentIndex={currentTabIndex}>
+                <TextField value={inputData.username} placeholder='Username' type='text' fluid={true} onChange={(e) => {
+                    inputData.username = e.target.value
+                }} />
+                <TextField value={inputData.password} placeholder='Password' type='password' fluid={true} onChange={(e) => {
+                    inputData.password = e.target.value
+                }} />
+                <AlertGroup alerts={signInOrSignUpErrors} />
+                <div style={{ textAlign: 'right' }}>
+                    <Button onClick={() => {
+                        if (inputData.username && inputData.password) {
+                            if (i == 0) {
+                                encryptedSocket.on('e', (data) => {
+                                    if (data.event == 'success' && data.data.successId == 'signUp.success') {
+                                        setFlyoutOpen(false)
+                                        setSignedIn({ username: inputData.username })
+                                    } else if (data.event == 'error' && data.data.errId == 'signUp.usernameIsTaken') {
+                                        setSignInOrSignUpErrors([{
+                                            type: 'error',
+                                            title: 'Sign Up Failed - Username is already taken',
+                                            desc: 'The username is already taken by others. Please change one.'
+                                        }])
+                                    }
                                 })
-                                setFlyoutOpen(false)
-                                break;
+                            }
+
+                            if (i == 1) {
+                                encryptedSocket.on('e', (data) => {
+                                    if (data.event == 'success' && data.data.successId == 'signIn.success') {
+                                        setFlyoutOpen(false)
+                                        setSignedIn({ username: inputData.username })
+                                    } else if (data.event == 'error' && data.data.errId == 'signIn.incorrectUsernameOrPassword') {
+                                        setSignInOrSignUpErrors([{
+                                            type: 'error',
+                                            title: 'Sign In Failed - Incorrect username or password',
+                                            desc: 'You entered incorrect username or password.'
+                                        }])
+                                        // After showing the alert, user cannot edit the username or password, I don't know why!
+                                    }
+                                })
+                            }
+
+                            encryptedSocket.emit('e', {
+                                event: (i == 0 ? 'signUp' : 'signIn'),
+                                data: {
+                                    username: inputData.username,
+                                    password: inputData.password
+                                }
+                            })
                         }
-                    })
-                }}>{currentTabIndex == 0 ? 'Sign Up' : 'Sign In'}</Button>
-            </div>
-        </TabPanel>
-    </>} />
+                    }}>{i == 0 ? 'Sign Up' : 'Sign In'}</Button>
+                </div>
+            </TabPanel>
+        }} />
 }
 
 export default SignInOrSignUp

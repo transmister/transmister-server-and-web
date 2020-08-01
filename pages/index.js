@@ -15,6 +15,7 @@ export default function Home() {
     <>
       <Head>
         <title>{globalVariables.siteName}</title>
+        <meta charSet="UTF-8"></meta>
       </Head>
       <TitleBar
         title={globalVariables.appName}
