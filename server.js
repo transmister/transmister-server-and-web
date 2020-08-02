@@ -12,6 +12,9 @@ const handle = app.getRequestHandler()
 const mongoose = require('mongoose')
 const db = require('./models/db')
 
+// Encryption
+const cryptoJS = require('crypto-js')
+
 // log
 const keepLog = require('./log')
 
@@ -46,7 +49,7 @@ mongoose.connect('mongodb://localhost:27017/transmister', {
                     db.connections.findOne({ socketId: socket.id }).then(row => {
                         if (row) {
                             socket.emit(event, new NodeRSA()
-                                .importKey(row.data.key.client.public, 'pkcs1-public-pem')
+                                .importKey(row.key.client.public, 'pkcs1-public-pem')
                                 .encrypt(JSON.stringify(data), 'base64')
                             )
                         }
@@ -58,7 +61,7 @@ mongoose.connect('mongodb://localhost:27017/transmister', {
                     socket.on(event, (data) => {
                         db.connections.findOne({ socketId: socket.id }).then(row => {
                             if (row) {
-                                listener(JSON.parse(new NodeRSA().importKey(row.data.key.server.private, 'pkcs1-private-pem').decrypt(data, 'utf8')))
+                                listener(JSON.parse(new NodeRSA().importKey(row.key.server.private, 'pkcs1-private-pem').decrypt(data, 'utf8')))
                             }
                         }).catch((ex) => {
                             keepLog('error', 'encryptedSocket', 'failed', ex)
@@ -72,29 +75,30 @@ mongoose.connect('mongodb://localhost:27017/transmister', {
 
                 const key = new NodeRSA({ b: 1024 })
 
-                db.connections.findOne({ socketId: socket.id }).then((ret) => {
-                    if (ret) {
-                        db.connections.findOneAndDelete({ socketId: socket.id }).then((ret) => {
-                            keepLog('event', 'socket', 'b', `${socket.id} - save   - client public key`)
-                        }).catch((ex) => {
-                            keepLog('error', 'socket', 'b', `${socket.id} - save   - failed - client public key`)
-                        })
-                    }
-
+                const connectionsSaver = () => {
                     new db.connections({
                         socketId: socket.id,
-                        data: {
-                            key: {
-                                client: {
-                                    public: data
-                                },
-                                server: {
-                                    public: key.exportKey('pkcs1-public-pem'),
-                                    private: key.exportKey('pkcs1-private-pem')
-                                }
+                        key: {
+                            client: {
+                                public: data
+                            },
+                            server: {
+                                public: key.exportKey('pkcs1-public-pem'),
+                                private: key.exportKey('pkcs1-private-pem')
                             }
                         }
-                    }).save()
+                    }).save().then(() => {
+                        keepLog('event', 'socket', 'b', `${socket.id} - save   - client public key`)
+                    }).catch((e) => {
+                        keepLog('error', 'socket', 'b', `${socket.id} - save   - failed - client public key - ${e}`)
+                    })
+                }
+                db.connections.findOne({ socketId: socket.id }).then((row) => {
+                    if (row) {
+                        row.deleteOne().then(connectionsSaver)
+                    } else {
+                        connectionsSaver()
+                    }
                 })
 
 
@@ -113,9 +117,7 @@ mongoose.connect('mongodb://localhost:27017/transmister', {
                                 if (!row) {
                                     new db.users({
                                         username: data.data.username,
-                                        data: {
-                                            password: data.data.password,
-                                        },
+                                        passwordSHA512: cryptoJS.SHA512(data.data.password).toString()
                                     }).save().then((row) => {
                                         encryptedSocket.emit('e', {
                                             event: 'success',
@@ -144,9 +146,7 @@ mongoose.connect('mongodb://localhost:27017/transmister', {
 
                             db.users.findOne({
                                 username: data.data.username,
-                                data: {
-                                    password: data.data.password,
-                                }
+                                passwordSHA512: cryptoJS.SHA512(data.data.password).toString(),
                             }).then(row => {
                                 if (!row) {
                                     encryptedSocket.emit('e', {
@@ -178,9 +178,9 @@ mongoose.connect('mongodb://localhost:27017/transmister', {
                 keepLog('event', 'socket', 'disconnect', socket.id)
 
                 // delete when the user disconnect to the server
-                db.connections.findOneAndDelete({ socketId: socket.id }).then((ret) => {
+                db.connections.findOneAndDelete({ socketId: socket.id }).then((row) => {
                     keepLog('event', 'socket', 'disconnect', `${socket.id} - delete  - recent connection`)
-                }).catch((ex) => {
+                }).catch((e) => {
                     keepLog('error', 'socket', 'disconnect', `${socket.id} - delete  - recent connection`)
                 })
             })

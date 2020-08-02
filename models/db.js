@@ -25,38 +25,32 @@ const Schema = {
             required: true,
             trim: true
         },
-        data: {
-            type: Object,
-            required: true,
-            key: {
-                client: {
-                    public: {
-                        type: String,
-                        required: true,
-                        trim: true
-                    }
-                },
-                server: {
-                    public: {
-                        type: String,
-                        required: true,
-                        trim: true
-                    },
-                    private: {
-                        type: String,
-                        required: true,
-                        trim: true
-                    }
+        key: {
+            client: {
+                public: {
+                    type: String,
+                    required: true,
+                    trim: true
                 }
             },
-            userInfo: {
-                username: {
+            server: {
+                public: {
                     type: String,
-                    required: false,
+                    required: true,
                     trim: true
                 },
+                private: {
+                    type: String,
+                    required: true,
+                    trim: true
+                }
             }
-        }
+        },
+        username: {
+            type: String,
+            required: false,
+            trim: true
+        },
     }, {
         timestamps: true
     }),
@@ -66,13 +60,13 @@ const Schema = {
             required: true,
             trim: true
         },
-        data: {
-            password: {
-                type: String,
-                required: true,
-                trim: false
-            },
-        },
+        passwordSHA512: {
+            type: String,
+            required: true,
+            trim: true
+        }
+    }, {
+        timestamps: true
     })
 }
 
