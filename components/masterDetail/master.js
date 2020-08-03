@@ -22,7 +22,7 @@ export default function Master(props) {
                         //     in Container (created by AppContainer)
                         //     in AppContainer
                         //     in Root
-                        <div className={styles.listItem} key={props.data[i].title}>
+                        <div className={styles.listItem}>
                             <p className={styles.listItemTitle}>{props.data[i].title}</p>
                             <p className={styles.listItemDescription}>{props.data[i].description}</p>
                         </div>

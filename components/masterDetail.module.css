@@ -1,4 +1,5 @@
-.masterDetail{
-    margin-top: 46px;
-    height: calc(100vh - 46px);
+.masterDetail {
+    /* padding-top: 46px; */
+    height: 100vh;
+    overflow: hidden;
 }

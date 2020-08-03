@@ -2,7 +2,7 @@
     margin: 8px;
     outline: none;
     border: none;
-    background-color: var(--color-blue-theme-2);
+    background-color: var(--color-blue-theme-2-opacity-8);
     line-height: 30px;
     font-size: 12px;
     padding: 0 8px;
@@ -14,13 +14,13 @@
 }
 
 .searchBar:hover {
-    background-color: var(--color-blue-theme-3);
+    background-color: var(--color-blue-theme-3-opacity-8);
     transition: var(--hover-transition);
 }
 
 .searchBar:focus {
-    background-color: var(--color-blue-theme-4);
-    box-shadow: 0 0 32px var(--color-blue-theme);
+    background-color: var(--color-blue-theme-4-opacity-8);
+    box-shadow: 0 0 32px var(--color-blue-theme-opacity-8);
     transition: var(--active-transition);
 }
 

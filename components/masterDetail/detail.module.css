@@ -1,5 +1,8 @@
 .detail {
+    padding-top: 46px;
     width: calc(100% - 288px);
+    height: 100vh;
+    overflow-y: scroll;
     vertical-align: top;
     display: inline-block;
 }

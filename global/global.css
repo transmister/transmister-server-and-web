@@ -13,6 +13,12 @@ body {
     --color-blue-theme-2: #4ea9ff;
     --color-blue-theme-3: #65b4ff;
     --color-blue-theme-4: #85c4ff;
+
+    --color-blue-theme-opacity-8: rgba(0, 131, 255, .8);
+    --color-blue-theme-2-opacity-8: rgba(78, 169, 255, .8);
+    --color-blue-theme-3-opacity-8: rgba(101, 180, 255, .8);
+    --color-blue-theme-4-opacity-8: rgba(133, 196, 255, .8);
+
     --color-blue-theme-text: #f0f8ff;
     --color-blue-theme-text-2: #d1e9ff;
     --color-blue-theme-text-3: #acd7ff;
@@ -35,6 +41,9 @@ body {
     /* Border radius */
     --border-radius: 4px;
     --border-radius-2: 8px;
+
+    /* Filters */
+    --blur: blur(16px);
 
     /* Transitions */
     --hover-transition: all 1s;
