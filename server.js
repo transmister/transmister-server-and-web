@@ -12,9 +12,6 @@ const handle = app.getRequestHandler()
 const mongoose = require('mongoose')
 const db = require('./models/db')
 
-// Encryption
-const cryptoJS = require('crypto-js')
-
 // log
 const keepLog = require('./log')
 
@@ -117,7 +114,7 @@ mongoose.connect('mongodb://localhost:27017/transmister', {
                                 if (!row) {
                                     new db.users({
                                         username: data.data.username,
-                                        passwordSHA512: cryptoJS.SHA512(data.data.password).toString()
+                                        passwordSHA512: data.data.passwordSHA512
                                     }).save().then((row) => {
                                         encryptedSocket.emit('e', {
                                             event: 'success',
@@ -146,7 +143,7 @@ mongoose.connect('mongodb://localhost:27017/transmister', {
 
                             db.users.findOne({
                                 username: data.data.username,
-                                passwordSHA512: cryptoJS.SHA512(data.data.password).toString(),
+                                passwordSHA512: data.data.passwordSHA512
                             }).then(row => {
                                 if (!row) {
                                     encryptedSocket.emit('e', {

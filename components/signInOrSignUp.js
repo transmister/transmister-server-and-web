@@ -67,11 +67,12 @@ function SignInOrSignUp({ setFlyoutOpen, setSignedIn }) {
                                 })
                             }
 
+                            const cryptoJS = require('crypto-js')
                             encryptedSocket.emit('e', {
                                 event: (i == 0 ? 'signUp' : 'signIn'),
                                 data: {
                                     username: inputData.username,
-                                    password: inputData.password
+                                    passwordSHA512: cryptoJS.SHA512(inputData.password).toString()
                                 }
                             })
                         }
