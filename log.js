@@ -9,6 +9,10 @@ function keepLog(
     if (!eventName) eventName = ''
     if (!msg) msg = ''
 
+    if (event == 'event') event = '\x1B[34mevent\x1B[39m'
+    if (event == 'ready') event = '\x1B[32mready\x1B[39m'
+    if (event == 'error') event = '\x1B[31merror\x1B[39m'
+
     function padding(num, len) {
         if (String(num).length > len) return num;
         return (Array(len).join('0') + num).slice(-len);

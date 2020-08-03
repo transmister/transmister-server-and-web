@@ -132,7 +132,7 @@ mongoose.connect('mongodb://localhost:27017/transmister', {
                                             errId: 'signUp.usernameIsTaken'
                                         }
                                     })
-                                    keepLog('event', 'encryptedSocket', 'e', `${socket.id} - signUp  - failed  - username: ${data.data.username} is already taken`)
+                                    keepLog('error', 'encryptedSocket', 'e', `${socket.id} - signUp  - failed  - username: ${data.data.username} is already taken`)
                                 }
                             })
                             break;
@@ -152,7 +152,7 @@ mongoose.connect('mongodb://localhost:27017/transmister', {
                                             errId: 'signIn.incorrectUsernameOrPassword'
                                         }
                                     })
-                                    keepLog('event', 'encryptedSocket', 'e', `${socket.id} - signIn  - failed - incorrect username or passowrd`)
+                                    keepLog('error', 'encryptedSocket', 'e', `${socket.id} - signIn  - failed - incorrect username or passowrd`)
                                 } else {
                                     encryptedSocket.emit('e', {
                                         event: 'success',
