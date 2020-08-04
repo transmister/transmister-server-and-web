@@ -1,7 +1,10 @@
 import styles from './menu.module.css'
 
 function Menu(props: {
-    items: Array<JSX.Element>
+    items: Array<{
+        text: string,
+        onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
+    }>,
 }) {
     var tmp = []
     for (const i in props.items) {

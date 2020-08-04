@@ -3,16 +3,15 @@ import TextField from './textField'
 import Button from './button'
 import encryptedSocket from '../socket/encryption'
 import AlertGroup from './alertGroup'
-import Alert from './alert'
-
-var inputData = {
-    username: undefined,
-    password: undefined
-}
 
 function SignInOrSignUp({ setFlyoutOpen, setSignedIn }) {
     const [currentTabIndex, setCurrentTabIndex] = React.useState(0)
     const [signInOrSignUpErrors, setSignInOrSignUpErrors] = React.useState([])
+
+    var inputData = {
+        username: undefined,
+        password: undefined
+    }
 
     return <TabView
         currentIndex={currentTabIndex}

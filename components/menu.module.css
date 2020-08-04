@@ -1,10 +1,9 @@
 .menu {
     width: max-content;
-    height: calc(max-content + 4px);
-    background-color: var(--color-background-white);
+    background-color: var(--color-background-white-opacity-8);
+    backdrop-filter: var(--blur);
     padding: 8px 0;
     border-radius: var(--border-radius);
-    box-shadow: var(--shadow-shorter);
 }
 
 .menuItem {
@@ -14,18 +13,18 @@
     width: 100%;
     padding: 8px;
     padding-right: 16px;
-    background-color: var(--color-background-white);
+    background-color: transparent;
     text-align: left;
     font-size: 16px;
     transition: var(--hover-transition);
 }
 
 .menuItem:hover {
-    background-color: var(--color-blue-theme-text);
+    background-color: var(--color-blue-theme-text-opacity-8);
     transition: var(--hover-transition);
 }
 
 .menuItem:active {
-    background-color: var(--color-blue-theme-text-2);
+    background-color: var(--color-blue-theme-text-2-opacity-8);
     transition: var(--active-transition);
 }

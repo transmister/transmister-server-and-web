@@ -23,6 +23,10 @@ body {
     --color-blue-theme-text-2: #d1e9ff;
     --color-blue-theme-text-3: #acd7ff;
 
+    --color-blue-theme-text-opacity-8: rgba(240, 248, 255, .8);
+    --color-blue-theme-text-2-opacity-8: rgba(209, 233, 255, .8);
+    --color-blue-theme-text-3-opacity-8: rgba(172, 215, 255, .8);
+
     /* Error theme colors */
     --color-error-theme: #dd0000;
     --color-error-theme-4: #ffcaca;
@@ -31,6 +35,10 @@ body {
     --color-background-white: #ffffff;
     --color-background-black-text: #191e22;
     --color-background-black-text-2: #9ea8b1;
+
+    --color-background-white-opacity-8: rgba(255, 255, 255, .8);
+    --color-background-black-text-opacity-8: rgba(25, 30, 34, .8);
+    --color-background-black-text-2-opacity-8: rgba(158, 168, 177, .8);
 
     /* Shadows */
     /* By https://tobiasahlin.com/blog/layered-smooth-box-shadows/ */
@@ -43,6 +51,7 @@ body {
     --border-radius-2: 8px;
 
     /* Filters */
+    --blur-8: blur(8px);
     --blur: blur(16px);
 
     /* Transitions */

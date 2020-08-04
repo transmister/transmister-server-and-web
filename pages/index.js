@@ -10,6 +10,7 @@ export default function Home() {
   const [flyoutOpen, setFlyoutOpen] = React.useState(false)
   const [flyoutContent, setFlyoutContent] = React.useState(<></>)
   const [signedIn, setSignedIn] = React.useState(false)
+  const [master, setMaster] = React.useState([])
 
   return (
     <>
@@ -25,98 +26,7 @@ export default function Home() {
         setSignedIn={setSignedIn}
       />
       <MasterDetail
-        master={[
-          {
-            key: 'MrWillCom',
-            title: 'Mr. Will',
-            description: 'hello!'
-          },
-          {
-            key: 'xCss',
-            title: 'Nine',
-            description: 'hello!'
-          },
-          {
-            key: 'aeilot',
-            title: 'Louis Aeilot',
-            description: 'hello!'
-          },
-          {
-            key: 'MrWillCom',
-            title: 'Mr. Will',
-            description: 'hello!'
-          },
-          {
-            key: 'xCss',
-            title: 'Nine',
-            description: 'hello!'
-          },
-          {
-            key: 'aeilot',
-            title: 'Louis Aeilot',
-            description: 'hello!'
-          },
-          {
-            key: 'MrWillCom',
-            title: 'Mr. Will',
-            description: 'hello!'
-          },
-          {
-            key: 'xCss',
-            title: 'Nine',
-            description: 'hello!'
-          },
-          {
-            key: 'aeilot',
-            title: 'Louis Aeilot',
-            description: 'hello!'
-          },
-          {
-            key: 'MrWillCom',
-            title: 'Mr. Will',
-            description: 'hello!'
-          },
-          {
-            key: 'xCss',
-            title: 'Nine',
-            description: 'hello!'
-          },
-          {
-            key: 'aeilot',
-            title: 'Louis Aeilot',
-            description: 'hello!'
-          },
-          {
-            key: 'MrWillCom',
-            title: 'Mr. Will',
-            description: 'hello!'
-          },
-          {
-            key: 'xCss',
-            title: 'Nine',
-            description: 'hello!'
-          },
-          {
-            key: 'aeilot',
-            title: 'Louis Aeilot',
-            description: 'hello!'
-          },
-          {
-            key: 'MrWillCom',
-            title: 'Mr. Will',
-            description: 'hello!'
-          },
-          {
-            key: 'xCss',
-            title: 'Nine',
-            description: 'hello!'
-          },
-          {
-            key: 'aeilot',
-            title: 'Louis Aeilot',
-            description: 'hello!'
-          },
-        ]}
+        master={master}
         detail={
           <>
             <ChatView />
