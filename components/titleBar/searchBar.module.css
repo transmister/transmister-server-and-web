@@ -1,4 +1,8 @@
 .searchBar {
+    display: inline;
+}
+
+.searchInput {
     margin: 8px;
     outline: none;
     border: none;
@@ -8,34 +12,40 @@
     padding: 0 8px;
     border-radius: var(--border-radius);
     color: var(--color-blue-theme-text);
-    width: 256px;
+    width: 218px;
     max-width: calc(100% - 16px);
     transition: var(--hover-transition);
 }
 
-.searchBar:hover {
+.searchInput:hover {
     background-color: var(--color-blue-theme-3-opacity-8);
     transition: var(--hover-transition);
 }
 
-.searchBar:focus {
+.searchInput:focus {
     background-color: var(--color-blue-theme-4-opacity-8);
     box-shadow: 0 0 32px var(--color-blue-theme-opacity-8);
     transition: var(--active-transition);
 }
 
-.searchBar::-webkit-input-placeholder {
+.searchInput::-webkit-input-placeholder {
     color: var(--color-blue-theme-text-2);
 }
 
-.searchBar:-moz-placeholder {
+.searchInput:-moz-placeholder {
     color: var(--color-blue-theme-text-2);
 }
 
-.searchBar::-moz-placeholder {
+.searchInput::-moz-placeholder {
     color: var(--color-blue-theme-text-2);
 }
 
-.searchBar:-ms-input-placeholder {
+.searchInput:-ms-input-placeholder {
     color: var(--color-blue-theme-text-2);
+}
+
+.addBtn {
+    width: 30px;
+    height: 30px;
+    margin: 8px 0;
 }

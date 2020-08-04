@@ -5,6 +5,8 @@ var encryptedSocket = {
     on: undefined
 }
 
+var keysToClients = {}
+
 function initializeEncryptionToServer() {
     const NodeRSA = require('node-rsa')
     const key = new NodeRSA({ b: 1024 })
@@ -51,18 +53,27 @@ function initializeEncryptionToServer() {
 
         }
 
-        // encryptedSocket.on('e', (data) => {
-        //     switch (data.event) {
-        //         case 'test':
-        //             break;
+        encryptedSocket.on('e', (data) => {
+            switch (data.event) {
+                case 'msg>specific.b':
+                    keysToClients[data.data.username] = {
+                        destination: {
+                            public: data.data.publicKey
+                        },
+                        local: {
+                            // public: key.exportKey('pkcs1-public-pem'),
+                            // private: key.exportKey('pkcs1-private-pem')
+                        }
+                    }
+                    break;
 
-        //         default:
-        //             break;
-        //     }
-        // })
+                default:
+                    break;
+            }
+        })
     })
 }
 
 
 export default encryptedSocket
-export { encryptedSocket, initializeEncryptionToServer }
+export { encryptedSocket, initializeEncryptionToServer, keysToClients }

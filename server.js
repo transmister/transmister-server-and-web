@@ -64,6 +64,20 @@ mongoose.connect('mongodb://localhost:27017/transmister', {
                             keepLog('error', 'encryptedSocket', 'failed', ex)
                         })
                     })
+                },
+                emitToSpecific: (socketId, event, data) => {
+                    db.connections.findOne({ socketId: socketId }).then((row) => {
+                        if (row) {
+                            io.sockets.connected[socketId].emit(
+                                event,
+                                new NodeRSA()
+                                    .importKey(row.key.client.public, 'pkcs1-public-pem')
+                                    .encrypt(
+                                        JSON.stringify(data), 'base64'
+                                    )
+                            )
+                        }
+                    })
                 }
             }
 
@@ -116,6 +130,7 @@ mongoose.connect('mongodb://localhost:27017/transmister', {
                                         username: data.data.username,
                                         passwordSHA512: data.data.passwordSHA512
                                     }).save().then((row) => {
+                                        db.connections.findOneAndUpdate({ socketId: socket.id }, { username: data.data.username })
                                         encryptedSocket.emit('e', {
                                             event: 'success',
                                             data: {
@@ -137,7 +152,6 @@ mongoose.connect('mongodb://localhost:27017/transmister', {
                             })
                             break;
 
-
                         case 'signIn':
                             keepLog('event', 'encryptedSocket', 'e', `${socket.id} - signIn  - receive sign in message > username: ${data.data.username}`)
 
@@ -154,13 +168,37 @@ mongoose.connect('mongodb://localhost:27017/transmister', {
                                     })
                                     keepLog('error', 'encryptedSocket', 'e', `${socket.id} - signIn  - failed - incorrect username or passowrd`)
                                 } else {
-                                    encryptedSocket.emit('e', {
-                                        event: 'success',
-                                        data: {
-                                            successId: 'signIn.success'
+                                    db.connections.findOneAndUpdate({ socketId: socket.id }, { username: data.data.username }).then(() => {
+                                        encryptedSocket.emit('e', {
+                                            event: 'success',
+                                            data: {
+                                                successId: 'signIn.success'
+                                            }
+                                        })
+                                        keepLog('event', 'encryptedSocket', 'e', `${socket.id} - signIn  - success - sign in success > username: ${row.username}`)
+                                    }).catch(() => {
+                                        keepLog('error', 'encryptedSocket', 'e', `${socket.id} - signIn  - failed - sign in failed when saving to db > username: ${row.username}`)
+                                    })
+                                }
+                            })
+                            break;
+
+                        case 'msg>specific':
+                            db.connections.findOne({ username: data.data.username }).then((row) => {
+                                if (row) {
+                                    db.connections.findOne({ socketId: socket.id }).then((row) => {
+                                        if (row) {
+                                            data.data.data.data['username'] = row.username
+                                            encryptedSocket.emitToSpecific(row.socketId, 'e', data.data.data)
+                                        } else {
+                                            encryptedSocket.emit('e', {
+                                                event: 'error',
+                                                data: {
+                                                    errId: 'notSignedIn'
+                                                }
+                                            })
                                         }
                                     })
-                                    keepLog('event', 'encryptedSocket', 'e', `${socket.id} - signIn  - success - find in db > username: ${row.username}`)
                                 }
                             })
                             break;

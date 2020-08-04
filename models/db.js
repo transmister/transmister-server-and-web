@@ -23,33 +23,33 @@ const Schema = {
         socketId: {
             type: String,
             required: true,
-            trim: true
+            trim: false
         },
         key: {
             client: {
                 public: {
                     type: String,
                     required: true,
-                    trim: true
+                    trim: false
                 }
             },
             server: {
                 public: {
                     type: String,
                     required: true,
-                    trim: true
+                    trim: false
                 },
                 private: {
                     type: String,
                     required: true,
-                    trim: true
+                    trim: false
                 }
             }
         },
         username: {
             type: String,
             required: false,
-            trim: true
+            trim: false
         },
     }, {
         timestamps: true
@@ -58,12 +58,12 @@ const Schema = {
         username: {
             type: String,
             required: true,
-            trim: true
+            trim: false
         },
         passwordSHA512: {
             type: String,
             required: true,
-            trim: true
+            trim: false
         }
     }, {
         timestamps: true
