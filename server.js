@@ -184,12 +184,12 @@ mongoose.connect('mongodb://localhost:27017/transmister', {
                             break;
 
                         case 'msg>specific':
-                            db.connections.findOne({ username: data.data.username }).then((row) => {
+                            db.connections.findOne({ username: data.data.from }).then((row) => {
                                 if (row) {
                                     db.connections.findOne({ socketId: socket.id }).then((row) => {
                                         if (row) {
-                                            data.data.data.data['username'] = row.username
-                                            encryptedSocket.emitToSpecific(row.socketId, 'e', data.data.data)
+                                            data.data['from'] = row.username
+                                            encryptedSocket.emitToSpecific(row.socketId, 'e', data.data)
                                         } else {
                                             encryptedSocket.emit('e', {
                                                 event: 'error',

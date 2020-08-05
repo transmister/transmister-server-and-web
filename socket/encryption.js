@@ -7,6 +7,8 @@ var encryptedSocket = {
 
 var keysToClients = {}
 
+function initializeEncryptionToAnotherClient() { }
+
 function initializeEncryptionToServer() {
     const NodeRSA = require('node-rsa')
     const key = new NodeRSA({ b: 1024 })
@@ -50,25 +52,72 @@ function initializeEncryptionToServer() {
                 event: 'test',
                 testMsg: `${socket.id} is testing, time: ${new Date().getFullYear()}-${(new Date().getMonth() + 1)}-${new Date().getDate()} - ${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`
             })
+        }
 
+        initializeEncryptionToAnotherClient = (username) => {
+            const key = new NodeRSA({ b: 2048 })
+            if (!keysToClients[username]) {
+                keysToClients[username] = {
+                    destination: {
+                        public: undefined
+                    },
+                    local: {
+                        public: key.exportKey('pkcs1-public-pem'),
+                        private: key.exportKey('pkcs1-private-pem')
+                    }
+                }
+
+                encryptedSocket.emit('e', {
+                    event: 'msg>specific',
+                    data: {
+                        event: 'b',
+                        specificMsg: true,
+                        to: searchInputRef.current.value,
+                        data: keysToClients[searchInputRef.current.value].local.public
+                    }
+                })
+            }
         }
 
         encryptedSocket.on('e', (data) => {
-            switch (data.event) {
-                case 'msg>specific.b':
-                    keysToClients[data.data.username] = {
-                        destination: {
-                            public: data.data.publicKey
-                        },
-                        local: {
-                            // public: key.exportKey('pkcs1-public-pem'),
-                            // private: key.exportKey('pkcs1-private-pem')
-                        }
-                    }
-                    break;
+            if (data.specificMsg) {
+                switch (data.event) {
+                    case 'b':
+                        if (keysToClients[data.from]) {
+                            if (keysToClients[data.from].local.public && keysToClients[data.from].local.private) {
+                                keysToClients[data.from].destination = data.data
 
-                default:
-                    break;
+
+                            }
+                        } else {
+                            const key = new NodeRSA({ b: 2048 })
+                            keysToClients[data.from] = {
+                                destination: {
+                                    public: data.data
+                                },
+                                local: {
+                                    public: key.exportKey('pkcs1-public-pem'),
+                                    private: key.exportKey('pkcs1-private-pem')
+                                }
+                            }
+
+                            encryptedSocket.emit('e', {
+                                event: 'msg>specific',
+                                data: {
+                                    event: 'b',
+                                    specificMsg: true,
+                                    to: searchInputRef.current.value,
+                                    data: keysToClients[data.from].local.public
+                                }
+                            })
+                        }
+                        break;
+
+                    default:
+                        break;
+                }
+            } else {
+
             }
         })
     })
@@ -76,4 +125,4 @@ function initializeEncryptionToServer() {
 
 
 export default encryptedSocket
-export { encryptedSocket, initializeEncryptionToServer, keysToClients }
+export { encryptedSocket, initializeEncryptionToServer, keysToClients, initializeEncryptionToAnotherClient }

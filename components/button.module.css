@@ -20,3 +20,9 @@
     background-color: var(--color-blue-theme-text-3);
     transition: var(--active-transition);
 }
+
+.button:disabled {
+    background-color: var(--color-blue-theme-text-3);
+    cursor: default;
+    pointer-events: none;
+}

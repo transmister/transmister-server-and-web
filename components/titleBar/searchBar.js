@@ -1,7 +1,6 @@
 import styles from "./searchBar.module.css"
 import Button from '../button'
-import encryptedSocket, { keysToClients } from "../../socket/encryption"
-import NodeRSA from "node-rsa"
+import encryptedSocket, { keysToClients, initializeEncryptionToAnotherClient } from "../../socket/encryption"
 
 export default function SearchBar({ signedIn }) {
     const [searchInputPlaceholder, setSearchInputPlaceholder] = React.useState('Search')
@@ -10,38 +9,19 @@ export default function SearchBar({ signedIn }) {
     var status = 'search'
 
     const addContact = () => {
-        if (searchInputRef.current.value) {
-            const key = new NodeRSA({ b: 2048 })
-            keysToClients[searchInputRef.current.value] = {
-                destination: {
-                    public: undefined
-                },
-                local: {
-                    public: key.exportKey('pkcs1-public-pem'),
-                    private: key.exportKey('pkcs1-private-pem')
-                }
-            }
+        if (signedIn) {
+            if (searchInputRef.current.value && searchInputRef.current.value != signedIn.username) {
+                initializeEncryptionToAnotherClient(searchInputRef.current.value)
 
-            encryptedSocket.emit('e', {
-                event: 'msg>specific',
-                data: {
-                    username: searchInputRef.current.value,
-                    data: {
-                        event: 'msg>specific.b',
-                        data: {
-                            publicKey: keysToClients[searchInputRef.current.value].local.public
-                        }
-                    }
-                }
-            })
-            status = 'search'
-            searchInputRef.current.blur()
-            searchInputRef.current.value = ''
-            setSearchInputPlaceholder('Search')
-        } else {
-            status = 'addContact'
-            searchInputRef.current.focus()
-            setSearchInputPlaceholder('Contact to ...')
+                status = 'search'
+                searchInputRef.current.blur()
+                searchInputRef.current.value = ''
+                setSearchInputPlaceholder('Search')
+            } else {
+                status = 'addContact'
+                searchInputRef.current.focus()
+                setSearchInputPlaceholder('Contact to...')
+            }
         }
     }
 
@@ -49,13 +29,13 @@ export default function SearchBar({ signedIn }) {
         <input placeholder={searchInputPlaceholder} className={styles.searchInput} onKeyDown={(e) => {
             if (e.keyCode == 13 && e.target.value && status == 'addContact') {
                 addContact()
-            } else if (e.keyCode == 13 && !e.target.value && status == 'addContact') {
+            } else if ((e.keyCode == 13 || e.keyCode == 27) && !e.target.value && status == 'addContact') {
                 status = 'search'
                 setSearchInputPlaceholder('Search')
             }
-        }} ref={searchInputRef} />
+        }} ref={searchInputRef} disabled={!signedIn} style={{ opacity: (signedIn ? null : 0) }} />
         <Button className={styles.addBtn} onClick={() => {
             addContact()
-        }}>{addButtonText}</Button>
+        }} disabled={!signedIn} style={{ opacity: (signedIn ? null : 0) }}>{addButtonText}</Button>
     </div>)
 }

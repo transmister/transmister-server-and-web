@@ -61,7 +61,6 @@ function SignInOrSignUp({ setFlyoutOpen, setSignedIn }) {
                                             title: 'Sign In Failed - Incorrect username or password',
                                             desc: 'You entered incorrect username or password.'
                                         }])
-                                        // After showing the alert, user cannot edit the username or password, I don't know why!
                                     }
                                 })
                             }
