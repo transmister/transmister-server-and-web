@@ -33,9 +33,9 @@ export default function SearchBar({ signedIn }) {
                 status = 'search'
                 setSearchInputPlaceholder('Search')
             }
-        }} ref={searchInputRef} disabled={!signedIn} style={{ opacity: (signedIn ? null : 0) }} />
+        }} ref={searchInputRef} disabled={!signedIn} style={{ opacity: (signedIn ? null : 0), transform: `scale(${signedIn ? 1 : 0.8})` }} />
         <Button className={styles.addBtn} onClick={() => {
             addContact()
-        }} disabled={!signedIn} style={{ opacity: (signedIn ? null : 0) }}>{addButtonText}</Button>
+        }} disabled={!signedIn} style={{ opacity: (signedIn ? null : 0), transform: `scale(${signedIn ? 1 : 0.8})` }}>{addButtonText}</Button>
     </div>)
 }

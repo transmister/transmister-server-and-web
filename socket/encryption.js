@@ -95,6 +95,8 @@ function initializeEncryptionToServer() {
         }
 
         initializeEncryptionToAnotherClient = (username) => {
+            console.log(`Encrypting... ${username}`)
+
             const key = new NodeRSA({ b: 2048 })
             if (!keysToClients[username]) {
                 keysToClients[username] = {
@@ -112,14 +114,15 @@ function initializeEncryptionToServer() {
                     data: {
                         event: 'specificMsg.b',
                         specificMsg: true,
-                        to: searchInputRef.current.value,
-                        data: keysToClients[searchInputRef.current.value].local.public
+                        to: username,
+                        data: keysToClients[username].local.public
                     }
                 })
             }
         }
 
         encryptedSocket.on('e', (data) => {
+            console.log(data)
             // If it's a specific message
             if (data.specificMsg) {
                 switch (data.event) {
@@ -130,6 +133,8 @@ function initializeEncryptionToServer() {
                             // If we only our own keys, save the key to `data.from`
                             if (keysToClients[data.from].local.public && keysToClients[data.from].local.private) {
                                 keysToClients[data.from].destination = data.data
+
+                                console.log(`Encrypted successful! ${data.from}`)
                             }
                         // If we don't have any keys
                         } else {
@@ -156,6 +161,8 @@ function initializeEncryptionToServer() {
                                     data: keysToClients[data.from].local.public
                                 }
                             })
+
+                            console.log(`Encrypted successful! ${data.from}`)
                         }
                         break;
 

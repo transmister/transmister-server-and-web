@@ -196,6 +196,7 @@ mongoose.connect('mongodb://localhost:27017/transmister', {
                                             data.data['from'] = rowL.username
                                             // Send to target
                                             encryptedSocket.emitToSpecific(rowD.socketId, 'e', data.data)
+                                            keepLog('event', 'encryptedSocket', 'msg>specific', `${socket.id} - specificMsg - success - sent a specific msg`)
 
                                         // If isn't signed in, refuse to send
                                         } else {
@@ -205,6 +206,7 @@ mongoose.connect('mongodb://localhost:27017/transmister', {
                                                     errId: 'notSignedIn'
                                                 }
                                             })
+                                            keepLog('error', 'encryptedSocket', 'msg>specific', `${socket.id} - specificMsg - failed - not signed in so cannot send a specific msg`)
                                         }
                                     })
                                 }
