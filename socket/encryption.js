@@ -95,10 +95,8 @@ function initializeEncryptionToServer() {
         }
 
         initializeEncryptionToAnotherClient = (username) => {
-            console.log(`Encrypting... ${username}`)
-
-            const key = new NodeRSA({ b: 2048 })
             if (!keysToClients[username]) {
+                const key = new NodeRSA({ b: 2048 })
                 keysToClients[username] = {
                     destination: {
                         public: undefined
@@ -133,8 +131,6 @@ function initializeEncryptionToServer() {
                             // If we only our own keys, save the key to `data.from`
                             if (keysToClients[data.from].local.public && keysToClients[data.from].local.private) {
                                 keysToClients[data.from].destination = data.data
-
-                                console.log(`Encrypted successful! ${data.from}`)
                             }
                         // If we don't have any keys
                         } else {
@@ -161,8 +157,6 @@ function initializeEncryptionToServer() {
                                     data: keysToClients[data.from].local.public
                                 }
                             })
-
-                            console.log(`Encrypted successful! ${data.from}`)
                         }
                         break;
 
