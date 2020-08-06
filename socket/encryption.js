@@ -2,7 +2,23 @@ import socket from '../socket/socket'
 
 var encryptedSocket = {
     emit: undefined,
-    on: undefined
+    on: undefined,
+    specific: {
+        /**
+         *
+         * @param {string} username
+         * @param {string} event must start with `specificMsg.`, like `specificMsg.b`
+         * @param {Function} listener the function receives `data`
+         */
+        emit: undefined,
+        /**
+         *
+         * @param {string} username
+         * @param {string} event must start with `specificMsg.`, like `specificMsg.b`
+         * @param {Function} listener the function receives `data`
+         */
+        on: undefined
+    }
 }
 
 var keysToClients = {}
@@ -47,6 +63,30 @@ function initializeEncryptionToServer() {
             })
         }
 
+        // JSDoc at line 7
+        encryptedSocket.specific.emit = (username, event, data) => {
+            encryptedSocket.emit('e', {
+                event: 'msg>specific',
+                data: {
+                    event: event,
+                    specificMsg: true,
+                    to: username,
+                    data: new NodeRSA()
+                        .importKey(keysToClients[username].destination.public, 'pkcs1-public-pem')
+                        .encrypt(JSON.stringify(data), 'base64')
+                }
+            })
+        }
+
+        // JSDoc at line 14
+        encryptedSocket.specific.on = (username, event, listener) => {
+            encryptedSocket.on('e', (data) => {
+                if (data.specificMsg && data.from == username && data.event == event) {
+                    listener(JSON.parse(new NodeRSA().importKey(keysToClients[username].local.private, 'pkcs1-private-pem').decrypt(data.data)))
+                }
+            })
+        }
+
         if (process.env.NODE_ENV != 'production') {
             encryptedSocket.emit('e', {
                 event: 'test',
@@ -70,7 +110,7 @@ function initializeEncryptionToServer() {
                 encryptedSocket.emit('e', {
                     event: 'msg>specific',
                     data: {
-                        event: 'b',
+                        event: 'specificMsg.b',
                         specificMsg: true,
                         to: searchInputRef.current.value,
                         data: keysToClients[searchInputRef.current.value].local.public
@@ -80,17 +120,22 @@ function initializeEncryptionToServer() {
         }
 
         encryptedSocket.on('e', (data) => {
+            // If it's a specific message
             if (data.specificMsg) {
                 switch (data.event) {
-                    case 'b':
+                    // The case to initialize client-to-client end-to-end encryption
+                    case 'specificMsg.b':
+                        // If we already have the key to `data.from` (maybe incomplete)
                         if (keysToClients[data.from]) {
+                            // If we only our own keys, save the key to `data.from`
                             if (keysToClients[data.from].local.public && keysToClients[data.from].local.private) {
                                 keysToClients[data.from].destination = data.data
-
-
                             }
+                        // If we don't have any keys
                         } else {
+                            // Initializa a new key, length: 2048
                             const key = new NodeRSA({ b: 2048 })
+                            // Save the new key to `keysToClients`
                             keysToClients[data.from] = {
                                 destination: {
                                     public: data.data
@@ -101,12 +146,13 @@ function initializeEncryptionToServer() {
                                 }
                             }
 
+                            // Send our public key to `data.from`
                             encryptedSocket.emit('e', {
                                 event: 'msg>specific',
                                 data: {
-                                    event: 'b',
+                                    event: 'specificMsg.b',
                                     specificMsg: true,
-                                    to: searchInputRef.current.value,
+                                    to: data.from,
                                     data: keysToClients[data.from].local.public
                                 }
                             })

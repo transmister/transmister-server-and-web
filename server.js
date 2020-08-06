@@ -184,12 +184,20 @@ mongoose.connect('mongodb://localhost:27017/transmister', {
                             break;
 
                         case 'msg>specific':
-                            db.connections.findOne({ username: data.data.from }).then((row) => {
-                                if (row) {
-                                    db.connections.findOne({ socketId: socket.id }).then((row) => {
-                                        if (row) {
-                                            data.data['from'] = row.username
-                                            encryptedSocket.emitToSpecific(row.socketId, 'e', data.data)
+                            // Find whether this target user is online
+                            db.connections.findOne({ username: data.data.to }).then((rowD) => {
+                                // If online
+                                if (rowD) {
+                                    // Find out who is signed in with this `socket.id`
+                                    db.connections.findOne({ socketId: socket.id }).then((rowL) => {
+                                        // If found who is signed in
+                                        if (rowL) {
+                                            // Record the authenticated username into data
+                                            data.data['from'] = rowL.username
+                                            // Send to target
+                                            encryptedSocket.emitToSpecific(rowD.socketId, 'e', data.data)
+
+                                        // If isn't signed in, refuse to send
                                         } else {
                                             encryptedSocket.emit('e', {
                                                 event: 'error',
