@@ -86,7 +86,10 @@ mongoose.connect('mongodb://localhost:27017/transmister', {
 
                 const key = new NodeRSA({ b: 1024 })
 
-                const connectionsSaver = () => {
+                /**
+                 * Save current connection's keys
+                 */
+                var saveCurrentConnection = () => {
                     new db.connections({
                         socketId: socket.id,
                         key: {
@@ -104,11 +107,12 @@ mongoose.connect('mongodb://localhost:27017/transmister', {
                         keepLog('error', 'socket', 'b', `${socket.id} - save   - failed - client public key - ${e}`)
                     })
                 }
+
                 db.connections.findOne({ socketId: socket.id }).then((row) => {
                     if (row) {
-                        row.deleteOne().then(connectionsSaver)
+                        row.deleteOne().then(saveCurrentConnection)
                     } else {
-                        connectionsSaver()
+                        saveCurrentConnection()
                     }
                 })
 
