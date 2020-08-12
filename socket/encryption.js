@@ -130,7 +130,9 @@ function initializeEncryptionToServer() {
                         if (keysToClients[data.from]) {
                             // If we only our own keys, save the key to `data.from`
                             if (keysToClients[data.from].local.public && keysToClients[data.from].local.private) {
+                                // Save `data.from`'s key to `keysToClients[data.from].destination`
                                 keysToClients[data.from].destination = data.data
+                                // Encryption successful
                             }
                         // If we don't have any keys
                         } else {
