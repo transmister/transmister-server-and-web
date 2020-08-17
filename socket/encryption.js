@@ -120,7 +120,6 @@ function initializeEncryptionToServer() {
         }
 
         encryptedSocket.on('e', (data) => {
-            console.log(data)
             // If it's a specific message
             if (data.specificMsg) {
                 switch (data.event) {

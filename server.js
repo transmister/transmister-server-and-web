@@ -1,3 +1,14 @@
+var stdin = process.openStdin()
+stdin.setRawMode(true)
+stdin.resume()
+stdin.setEncoding('utf8')
+stdin.on('data', function (key) {
+    if (key == '\u0003') {
+        console.log('\nExited.')
+        process.exit()
+    }
+})
+
 // server
 const { createServer } = require('http')
 const { parse } = require('url')
