@@ -2,12 +2,6 @@ var stdin = process.openStdin()
 stdin.setRawMode(true)
 stdin.resume()
 stdin.setEncoding('utf8')
-stdin.on('data', function (key) {
-    if (key == '\u0003') {
-        console.log('\nExited.')
-        process.exit()
-    }
-})
 
 // server
 const { createServer } = require('http')
@@ -25,6 +19,22 @@ const db = require('./models/db')
 
 // log
 const keepLog = require('./log')
+
+stdin.on('data', function (key) {
+    if (key == '\u0003') {
+        console.log('\n')
+        console.log('Deleting connection data...')
+        db.connections.deleteMany({}).then(() => {
+            console.log('Connection data deleted.')
+            console.log('Exited.')
+            process.exit(0)
+        }).catch((err) => {
+            console.log('Error occured when deleting connection data:\n', err)
+            console.log('Exited.')
+            process.exit(0)
+        })
+    }
+})
 
 mongoose.connect('mongodb://localhost:27017/transmister', {
     useNewUrlParser: true,
