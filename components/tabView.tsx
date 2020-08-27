@@ -48,11 +48,11 @@ function Tabs(props: {
 }
 
 function Tab({ index, currentIndex, setIndex, children }) {
-    return <button onClick={() => { setIndex(index) }} className={index == currentIndex ? `${styles.tab} ${styles.tabActive}` : `${styles.tab}`}>{children}</button>
+    return <button key={index} onClick={() => { setIndex(index) }} className={index == currentIndex ? `${styles.tab} ${styles.tabActive}` : `${styles.tab}`}>{children}</button>
 }
 
 function TabPanel({ index, currentIndex, children }) {
-    return (index == currentIndex ? <div>{children}</div> : null)
+    return (index == currentIndex ? <div key={index}>{children}</div> : null)
 }
 
 export { TabView, Tabs, Tab, TabPanel }

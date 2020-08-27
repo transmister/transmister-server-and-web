@@ -1,22 +1,40 @@
 import styles from "./searchBar.module.css"
 import Button from '../button'
-import encryptedSocket, { keysToClients, initializeEncryptionToAnotherClient } from "../../socket/encryption"
+import { initializeEncryptionToAnotherClient } from "../../socket/encryption"
 
-export default function SearchBar({ signedIn }) {
+export default function SearchBar({ signedIn, master, setMaster }) {
     const [searchInputPlaceholder, setSearchInputPlaceholder] = React.useState('Search')
     var searchInputRef = React.createRef()
     const [addButtonText, setAddButtonText] = React.useState('+')
     var status = 'search'
 
     const addContact = () => {
+        const targetUser = searchInputRef.current.value;
         if (signedIn) {
-            if (searchInputRef.current.value && searchInputRef.current.value != signedIn.username) {
-                initializeEncryptionToAnotherClient(searchInputRef.current.value)
-
+            if (targetUser && targetUser != signedIn.username) {
+                // Clear the input
                 status = 'search'
                 searchInputRef.current.blur()
                 searchInputRef.current.value = ''
                 setSearchInputPlaceholder('Search')
+
+                initializeEncryptionToAnotherClient(targetUser).then((status) => {
+                    var inMaster = false
+                    for (const i in master) {
+                        if (master[i].key == status.username) {
+                            inMaster = true
+                        }
+                    }
+                    if (!inMaster) {
+                        const appendToMaster = [{
+                            key: status.username,
+                            title: status.username,
+                            description: 'Encryption initialized',
+                        }, ...master]
+                        setMaster(appendToMaster)
+                    }
+                }).catch((error) => { console.log(error) })
+
             } else {
                 status = 'addContact'
                 searchInputRef.current.focus()

@@ -4,6 +4,9 @@ import MasterDetail from '../components/masterDetail'
 import ChatView from '../components/chatView'
 import Flyout from '../components/flyout'
 import globalVariables from '../global/global'
+import { c2cEncryptionEvents } from '../socket/encryption'
+
+var masterControllerRegistered = false
 
 export default function Home() {
 
@@ -11,6 +14,29 @@ export default function Home() {
   const [flyoutContent, setFlyoutContent] = React.useState(<></>)
   const [signedIn, setSignedIn] = React.useState(false)
   const [master, setMaster] = React.useState([])
+
+  if (!masterControllerRegistered) {
+    c2cEncryptionEvents.on('update', (e) => {
+      let inMaster = false;
+      for (const i in master) {
+        let item = master[i]
+        if (item.key == e.username) {
+          inMaster = true
+          break
+        }
+      }
+      if (!inMaster) {
+        let newMaster = master
+        newMaster.push({
+          key: e.username,
+          title: e.username,
+          description: ''
+        })
+        setMaster(newMaster)
+      }
+    })
+    masterControllerRegistered = true
+  }
 
   return (
     <>
@@ -24,13 +50,15 @@ export default function Home() {
         setFlyoutOpen={setFlyoutOpen}
         signedIn={signedIn}
         setSignedIn={setSignedIn}
+        master={master}
+        setMaster={setMaster}
       />
       <MasterDetail
         master={master}
-        detail={
-          <>
-            <ChatView />
-          </>} />
+        detail={<>
+          <ChatView />
+        </>}
+      />
       <Flyout open={flyoutOpen} setFlyoutOpen={setFlyoutOpen}>
         {flyoutContent}
       </Flyout>

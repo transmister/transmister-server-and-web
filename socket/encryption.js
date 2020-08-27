@@ -1,5 +1,32 @@
 import socket from '../socket/socket'
 
+// c2c = client to client
+var c2cEncryptionEvents = {
+    listeners: {},
+    on: (event, listener) => {
+        let listenerArray = c2cEncryptionEvents.listeners[event]
+        let listenerPosition;
+        if (typeof listenerArray == 'object') {
+            listenerArray.push(listener)
+            listenerPosition = listenerArray.length--
+        } else {
+            listenerArray = [listener]
+            listenerPosition = 0
+        }
+        c2cEncryptionEvents.listeners[event] = listenerArray
+        return listenerPosition
+    },
+    trigger: (event, params) => {
+        for (const i in c2cEncryptionEvents.listeners[event]) {
+            let listener = c2cEncryptionEvents.listeners[event][i]
+            if (typeof listener == 'function') {
+                listener(params)
+            }
+        }
+        return
+    },
+}
+
 var encryptedSocket = {
     emit: undefined,
     on: undefined,
@@ -87,36 +114,52 @@ function initializeEncryptionToServer() {
             })
         }
 
-        if (process.env.NODE_ENV != 'production') {
-            encryptedSocket.emit('e', {
-                event: 'test',
-                testMsg: `${socket.id} is testing, time: ${new Date().getFullYear()}-${(new Date().getMonth() + 1)}-${new Date().getDate()} - ${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`
-            })
-        }
-
         initializeEncryptionToAnotherClient = (username) => {
-            if (!keysToClients[username]) {
-                const key = new NodeRSA({ b: 2048 })
-                keysToClients[username] = {
-                    destination: {
-                        public: undefined
-                    },
-                    local: {
-                        public: key.exportKey('pkcs1-public-pem'),
-                        private: key.exportKey('pkcs1-private-pem')
+            return new Promise((resolve, reject) => {
+                if (!keysToClients[username]) {
+                    const key = new NodeRSA({ b: 2048 })
+                    keysToClients[username] = {
+                        destination: {
+                            public: undefined
+                        },
+                        local: {
+                            public: key.exportKey('pkcs1-public-pem'),
+                            private: key.exportKey('pkcs1-private-pem')
+                        }
                     }
-                }
 
-                encryptedSocket.emit('e', {
-                    event: 'msg>specific',
-                    data: {
-                        event: 'specificMsg.b',
-                        specificMsg: true,
-                        to: username,
-                        data: keysToClients[username].local.public
-                    }
-                })
-            }
+                    encryptedSocket.on('e', (data) => {
+                        if (data.specificMsg) {
+                            if (data.event == 'specificMsg.b' && data.from == username) {
+                                resolve({
+                                    status: 'success',
+                                    keys: keysToClients[data.from],
+                                    username: username
+                                })
+                                c2cEncryptionEvents.trigger('update', { username: username })
+                                clearTimeout(timeout)
+                            }
+                        }
+                    })
+
+                    var timeout = setTimeout(() => {
+                        reject({
+                            status: 'encryption timeout',
+                            username: username
+                        })
+                    }, 30000);
+
+                    encryptedSocket.emit('e', {
+                        event: 'msg>specific',
+                        data: {
+                            event: 'specificMsg.b',
+                            specificMsg: true,
+                            to: username,
+                            data: keysToClients[username].local.public
+                        }
+                    })
+                }
+            })
         }
 
         encryptedSocket.on('e', (data) => {
@@ -125,40 +168,31 @@ function initializeEncryptionToServer() {
                 switch (data.event) {
                     // The case to initialize client-to-client end-to-end encryption
                     case 'specificMsg.b':
-                        // If we already have the key to `data.from` (maybe incomplete)
-                        if (keysToClients[data.from]) {
-                            // If we only our own keys, save the key to `data.from`
-                            if (keysToClients[data.from].local.public && keysToClients[data.from].local.private) {
-                                // Save `data.from`'s key to `keysToClients[data.from].destination`
-                                keysToClients[data.from].destination = data.data
-                                // Encryption successful
+                        // Initializa a new key, length: 2048
+                        const key = new NodeRSA({ b: 2048 })
+                        // Save the new key to `keysToClients`
+                        keysToClients[data.from] = {
+                            destination: {
+                                public: data.data
+                            },
+                            local: {
+                                public: key.exportKey('pkcs1-public-pem'),
+                                private: key.exportKey('pkcs1-private-pem')
                             }
-                        // If we don't have any keys
-                        } else {
-                            // Initializa a new key, length: 2048
-                            const key = new NodeRSA({ b: 2048 })
-                            // Save the new key to `keysToClients`
-                            keysToClients[data.from] = {
-                                destination: {
-                                    public: data.data
-                                },
-                                local: {
-                                    public: key.exportKey('pkcs1-public-pem'),
-                                    private: key.exportKey('pkcs1-private-pem')
-                                }
-                            }
-
-                            // Send our public key to `data.from`
-                            encryptedSocket.emit('e', {
-                                event: 'msg>specific',
-                                data: {
-                                    event: 'specificMsg.b',
-                                    specificMsg: true,
-                                    to: data.from,
-                                    data: keysToClients[data.from].local.public
-                                }
-                            })
                         }
+
+                        // Send our public key to `data.from`
+                        encryptedSocket.emit('e', {
+                            event: 'msg>specific',
+                            data: {
+                                event: 'specificMsg.b',
+                                specificMsg: true,
+                                to: data.from,
+                                data: keysToClients[data.from].local.public
+                            }
+                        })
+
+                        c2cEncryptionEvents.trigger('update', { username: data.from })
                         break;
 
                     default:
@@ -173,4 +207,4 @@ function initializeEncryptionToServer() {
 
 
 export default encryptedSocket
-export { encryptedSocket, initializeEncryptionToServer, keysToClients, initializeEncryptionToAnotherClient }
+export { encryptedSocket, initializeEncryptionToServer, keysToClients, initializeEncryptionToAnotherClient, c2cEncryptionEvents }
