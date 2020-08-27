@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "node server.js",
     "build": "npx next build",
-    "start": "NODE_ENV=production node server.js"
+    "start": "NODE_ENV=production node server.js",
+    "db-clean": "node dbClean.js",
+    "log-init": "mkdir .log"
   },
   "dependencies": {
     "bootstrap-icons": "^1.0.0-alpha5",

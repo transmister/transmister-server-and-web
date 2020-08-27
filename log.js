@@ -1,3 +1,5 @@
+const fs = require('fs')
+
 function keepLog(
     event,
     eventHandler,
@@ -43,7 +45,7 @@ function keepLog(
     var logStr = timeStr + align(event, 5) + divider + align(eventHandler, 15) + divider + align(eventName, 10) + divider + msg
 
     console.log(logStr)
-    require('fs').appendFile(`./.log/${d.y}-${d.mo}-${d.d}-${d.h}.log`, logStr, () => { })
+    fs.appendFile(`./.log/${d.y}-${d.mo}-${d.d}-${d.h}.log`, logStr, (err) => { })
 }
 
 module.exports = keepLog
