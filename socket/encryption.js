@@ -4,16 +4,13 @@ import socket from '../socket/socket'
 var c2cEncryptionEvents = {
     listeners: {},
     on: (event, listener) => {
-        let listenerArray = c2cEncryptionEvents.listeners[event]
         let listenerPosition;
-        if (typeof listenerArray == 'object') {
-            listenerArray.push(listener)
-            listenerPosition = listenerArray.length--
+        if (typeof c2cEncryptionEvents.listeners[event] != 'undefined') {
+            listenerPosition = c2cEncryptionEvents.listeners[event].push(listener) - 1
         } else {
-            listenerArray = [listener]
+            c2cEncryptionEvents.listeners[event] = [listener]
             listenerPosition = 0
         }
-        c2cEncryptionEvents.listeners[event] = listenerArray
         return listenerPosition
     },
     trigger: (event, params) => {
