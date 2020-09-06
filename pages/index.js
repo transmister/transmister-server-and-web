@@ -17,6 +17,8 @@ export default function Home() {
 
   if (!masterControllerRegistered) {
     c2cEncryptionEvents.on('update', (e) => {
+      console.log('triggered')
+
       let inMaster = false;
       for (const i in master) {
         let item = master[i]
@@ -30,7 +32,7 @@ export default function Home() {
         newMaster.push({
           key: e.username,
           title: e.username,
-          description: ''
+          description: 'Encryption initialized.'
         })
         setMaster(newMaster)
       }

@@ -18,22 +18,7 @@ export default function SearchBar({ signedIn, master, setMaster }) {
                 searchInputRef.current.value = ''
                 setSearchInputPlaceholder('Search')
 
-                initializeEncryptionToAnotherClient(targetUser).then((status) => {
-                    var inMaster = false
-                    for (const i in master) {
-                        if (master[i].key == status.username) {
-                            inMaster = true
-                        }
-                    }
-                    if (!inMaster) {
-                        const appendToMaster = [{
-                            key: status.username,
-                            title: status.username,
-                            description: 'Encryption initialized',
-                        }, ...master]
-                        setMaster(appendToMaster)
-                    }
-                }).catch((error) => { console.log(error) })
+                initializeEncryptionToAnotherClient(targetUser).then((status) => { }).catch((error) => { console.log(error) })
 
             } else {
                 status = 'addContact'
