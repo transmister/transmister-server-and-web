@@ -11,9 +11,10 @@ function keepLog(
     if (!eventName) eventName = ''
     if (!msg) msg = ''
 
-    if (event == 'event') event = '\x1B[34mevent\x1B[39m'
-    if (event == 'ready') event = '\x1B[32mready\x1B[39m'
-    if (event == 'error') event = '\x1B[31merror\x1B[39m'
+    var colorEvent
+    if (event == 'event') colorEvent = '\x1B[34mevent\x1B[39m'
+    if (event == 'ready') colorEvent = '\x1B[32mready\x1B[39m'
+    if (event == 'error') colorEvent = '\x1B[31merror\x1B[39m'
 
     function padding(num, len) {
         if (String(num).length > len) return num;
@@ -42,10 +43,11 @@ function keepLog(
 
     var divider = ' - '
     var timeStr = `${d.y}-${d.mo}-${d.d}-${d.h}-${d.mi}-${d.s}${divider}`
+    var colorLogStr = timeStr + align(colorEvent, 5) + divider + align(eventHandler, 15) + divider + align(eventName, 10) + divider + msg
     var logStr = timeStr + align(event, 5) + divider + align(eventHandler, 15) + divider + align(eventName, 10) + divider + msg
 
-    console.log(logStr)
-    fs.appendFile(`./.log/${d.y}-${d.mo}-${d.d}-${d.h}.log`, logStr, (err) => { })
+    console.log(colorLogStr)
+    fs.appendFile(`./.log/${d.y}-${d.mo}-${d.d}-${d.h}.log`, `${logStr}\n`, (err) => { })
 }
 
 module.exports = keepLog
