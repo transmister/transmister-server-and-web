@@ -4,6 +4,6 @@ export default function ChatView(props: {
     username?: string
 }) {
     return (
-        <div>ChatView</div>
+        <div>ChatView: {props.username}</div>
     )
 }

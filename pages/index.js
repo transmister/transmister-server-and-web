@@ -14,10 +14,13 @@ export default function Home() {
   const [flyoutContent, setFlyoutContent] = React.useState(<></>)
   const [signedIn, setSignedIn] = React.useState(false)
   const [master, setMaster] = React.useState([])
+  const [chatViewUsername, setChatViewUsername] = React.useState('nobody')
 
   if (!masterControllerRegistered) {
     c2cEncryptionEvents.on('update', (e) => {
       console.log('triggered')
+
+      setChatViewUsername(e.username)
 
       let inMaster = false;
       for (const i in master) {
@@ -58,7 +61,7 @@ export default function Home() {
       <MasterDetail
         master={master}
         detail={<>
-          <ChatView />
+          <ChatView username={chatViewUsername} />
         </>}
       />
       <Flyout open={flyoutOpen} setFlyoutOpen={setFlyoutOpen}>
