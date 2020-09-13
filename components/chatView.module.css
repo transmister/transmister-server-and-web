@@ -1,1 +1,59 @@
 .chatView {}
+
+.chatViewTitleBar {
+    background-color: var(--color-blue-theme-text-opacity-8);
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 8px 16px;
+    backdrop-filter: var(--blur);
+}
+
+.chatViewTitleBarTitle {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--color-blue-theme-2);
+}
+
+.chatViewMsgs {}
+
+.chatViewMsgs>p {
+    margin: 12px;
+    padding: 0;
+}
+
+.chatViewMsgs>p>p {
+    margin: 0;
+    padding: 8px;
+    background-color: var(--color-blue-theme-text);
+    display: inline-block;
+    border-radius: 8px;
+}
+
+.chatViewInputBar {
+    background-color: var(--color-blue-theme-text-opacity-8);
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 8px;
+    backdrop-filter: var(--blur);
+}
+
+.chatViewInputBarTextArea {
+    border: none;
+    border-radius: var(--border-radius);
+    outline: none;
+    background-color: var(--color-blue-theme-text-2-opacity-8);
+    resize: none;
+    padding: 8px;
+    width: calc(100% - 16px);
+    height: 20px;
+    transition: var(--hover-transition);
+}
+
+.chatViewInputBarTextArea:hover, .chatViewInputBarTextArea:focus {
+    background-color: var(--color-blue-theme-text-3-opacity-8);
+}

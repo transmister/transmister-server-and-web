@@ -1,7 +1,6 @@
 .master {
     padding-top: 46px;
     width: 288px;
-    height: 100vh;
     height: calc(100vh - 46px);
     overflow-y: scroll;
     display: inline-block;
