@@ -3,7 +3,7 @@
 .chatViewTitleBar {
     background-color: var(--color-blue-theme-text-opacity-8);
     position: sticky;
-    top: 0;
+    top: 1px;
     left: 0;
     right: 0;
     padding: 8px 16px;
