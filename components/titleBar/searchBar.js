@@ -1,6 +1,6 @@
 import styles from "./searchBar.module.css"
 import Button from '../button'
-import { initializeEncryptionToAnotherClient } from "../../socket/encryption"
+import { initializeEncryptionToAnotherClient, encryptedSocket } from "../../socket/encryption"
 
 export default function SearchBar({ signedIn, master, setMaster }) {
     const [searchInputPlaceholder, setSearchInputPlaceholder] = React.useState('Search')
@@ -18,7 +18,14 @@ export default function SearchBar({ signedIn, master, setMaster }) {
                 searchInputRef.current.value = ''
                 setSearchInputPlaceholder('Search')
 
-                initializeEncryptionToAnotherClient(targetUser).then((status) => { }).catch((error) => { console.log(error) })
+                initializeEncryptionToAnotherClient(targetUser).then((status) => {
+                    encryptedSocket.specific.on(status.username, 'test', (data) => {
+                        if (data == status.username) {
+                            // Tested successful
+                        }
+                    })
+                    encryptedSocket.specific.emit(status.username, 'test', signedIn.username)
+                }).catch((error) => { console.error(error) })
 
             } else {
                 status = 'addContact'

@@ -1,28 +1,7 @@
-import socket from '../socket/socket'
+import socket from './socket'
+import eventManager from './eventManager'
 
-// c2c = client to client
-var c2cEncryptionEvents = {
-    listeners: {},
-    on: (event, listener) => {
-        let listenerPosition;
-        if (typeof c2cEncryptionEvents.listeners[event] != 'undefined') {
-            listenerPosition = c2cEncryptionEvents.listeners[event].push(listener) - 1
-        } else {
-            c2cEncryptionEvents.listeners[event] = [listener]
-            listenerPosition = 0
-        }
-        return listenerPosition
-    },
-    trigger: (event, params) => {
-        for (const i in c2cEncryptionEvents.listeners[event]) {
-            let listener = c2cEncryptionEvents.listeners[event][i]
-            if (typeof listener == 'function') {
-                listener(params)
-            }
-        }
-        return
-    },
-}
+var c2cEncryptionEvents = new eventManager();
 
 var encryptedSocket = {
     emit: undefined,
@@ -87,7 +66,6 @@ function initializeEncryptionToServer() {
             })
         }
 
-        // JSDoc at line 7
         encryptedSocket.specific.emit = (username, event, data) => {
             encryptedSocket.emit('e', {
                 event: 'msg>specific',
@@ -102,7 +80,6 @@ function initializeEncryptionToServer() {
             })
         }
 
-        // JSDoc at line 14
         encryptedSocket.specific.on = (username, event, listener) => {
             encryptedSocket.on('e', (data) => {
                 if (data.specificMsg && data.from == username && data.event == event) {
@@ -165,7 +142,7 @@ function initializeEncryptionToServer() {
                     // The case to initialize client-to-client end-to-end encryption
                     case 'specificMsg.b':
                         if (keysToClients[data.from]) {
-
+                            keysToClients[data.from].destination.public = data.data
                         } else {
                             // Initializa a new key, length: 2048
                             const key = new NodeRSA({ b: 2048 })
@@ -192,6 +169,13 @@ function initializeEncryptionToServer() {
                             })
 
                             c2cEncryptionEvents.trigger('update', { username: data.from })
+
+                            encryptedSocket.specific.on(data.from, 'test', (testMsg) => {
+                                if (testMsg == data.from) {
+                                    // Tested successful
+                                }
+                                encryptedSocket.specific.emit(testMsg, 'test', data.to)
+                            })
                         }
                         break;
 
