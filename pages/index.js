@@ -33,7 +33,8 @@ export default function Home() {
         newMaster.push({
           key: e.username,
           title: e.username,
-          description: 'Encryption initialized.'
+          description: 'Encryption initialized.',
+          onClick: () => { if (e.username) { setChatViewUsername(e.username) } }
         })
         setMaster(newMaster)
       }
