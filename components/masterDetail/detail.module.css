@@ -1,8 +1,0 @@
-.detail {
-    padding-top: 46px;
-    width: calc(100% - 288px);
-    height: calc(100vh - 46px);
-    overflow-y: scroll;
-    vertical-align: top;
-    display: inline-block;
-}
