@@ -19,19 +19,6 @@
 
 .chatViewMsgs {}
 
-.chatViewMsgs>p {
-    margin: 12px;
-    padding: 0;
-}
-
-.chatViewMsgs>p>p {
-    margin: 0;
-    padding: 8px;
-    background-color: var(--color-blue-theme-text);
-    display: inline-block;
-    border-radius: 8px;
-}
-
 .chatViewInputBar {
     background-color: var(--color-blue-theme-text-opacity-8);
     position: sticky;

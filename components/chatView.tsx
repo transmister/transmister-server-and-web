@@ -1,10 +1,18 @@
 import styles from './chatView.module.css'
+import { msgMgr, msgMgrEvents } from '../messages/manager'
 
 export default function ChatView(props: {
     username: string,
     signedIn: boolean | object,
 }) {
     const centerAndGrey = { display: 'grid', placeItems: 'center', color: 'grey', height: '100%' }
+
+    const [msgs, setMsgs] = React.useState(msgMgr.get(props.username))
+    msgMgrEvents.on('add', (username) => {
+        if (username == props.username) {
+            setMsgs(msgMgr.get(props.username))
+        }
+    })
 
     if (props.username) {
         return (
@@ -14,15 +22,17 @@ export default function ChatView(props: {
                 </div>
                 <div className={styles.chatViewMsgs}>
                     {(() => {
-                        var items = []
-                        for (let i = 0; i < 64; i++) {
-                            items.push(<p><p>hello by {props.username}, {i + 1}</p></p>)
-                        }
-                        return items
+                        var msgList = []
+                        msgs.forEach(element => {
+                            msgList.push(<p>{JSON.stringify(element)}</p>)
+                        });
+                        return ""
                     })()}
                 </div>
                 <div className={styles.chatViewInputBar}>
-                    <textarea className={styles.chatViewInputBarTextArea}></textarea>
+                    <textarea className={styles.chatViewInputBarTextArea} onKeyDown={(ev) => {
+
+                    }}></textarea>
                 </div>
             </div>
         )
