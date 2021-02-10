@@ -1,0 +1,12 @@
+.navigation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 400;
+}
+
+.navigation .ms-CommandBar {
+    background-color: #fffa;
+    backdrop-filter: blur(16px);
+}

@@ -1,11 +1,10 @@
-import React from 'react';
-import { PrimaryButton } from '@fluentui/react/lib/Button';
+import * as React from 'react';
 import './App.css';
 
-function App() {
-  return (
-    <PrimaryButton>Hello, World!</PrimaryButton>
-  );
-}
-
-export default App;
+export default class App extends React.Component {
+  render() {
+    return <>
+      {this.props.children}
+    </>
+  }
+};
